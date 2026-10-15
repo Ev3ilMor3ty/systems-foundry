@@ -1,0 +1,10 @@
+{
+  "source_commit": "1563a78d79b9db8bcb31b6873d2e79c357a6eccb",
+  "compiler_sha256": "f08fe1527a1e3a8fcd7365c37dcf13f490e1dc15aedaefe9bebda9cd2ac96ff9",
+  "host": "linux-x86_64",
+  "glibc_minimum": "2.34",
+  "generated_targets": [
+    "linux-x86_64",
+    "windows-x86_64"
+  ]
+}

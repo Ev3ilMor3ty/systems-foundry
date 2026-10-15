@@ -1,0 +1,66 @@
+{
+  "ok": true,
+  "seed": 91711,
+  "n": 256,
+  "edges": 65536,
+  "comparison": "interleaved same-input paired runs; shared two-core host; every certificate independently checked",
+  "cases": [
+    {
+      "trial": 0,
+      "version": "baseline",
+      "wall_ms": 2182.634,
+      "solve_us": 115330,
+      "cost": 1736843,
+      "binary_sha256": "25c4d6105ffa4223adb1ed6d834d6567bbcbd91d00db2555adbd1f30adce85af",
+      "input_sha256": "cf96792e44a8159e3f38364b2bc61a9e96ae0cc0043f464824b99f9588c77663"
+    },
+    {
+      "trial": 0,
+      "version": "sax",
+      "wall_ms": 264.401,
+      "solve_us": 85393,
+      "cost": 1736843,
+      "binary_sha256": "c947064581431286087e6ff2bd1486d4e32011dc4cf9319b05c235c15930ae87",
+      "input_sha256": "cf96792e44a8159e3f38364b2bc61a9e96ae0cc0043f464824b99f9588c77663"
+    },
+    {
+      "trial": 1,
+      "version": "sax",
+      "wall_ms": 263.972,
+      "solve_us": 85665,
+      "cost": 1618080,
+      "binary_sha256": "c947064581431286087e6ff2bd1486d4e32011dc4cf9319b05c235c15930ae87",
+      "input_sha256": "ad9ca87c58f3590a8c6ebba04af90a738ee9e9b8e788a279f5dd85b9d74a4aec"
+    },
+    {
+      "trial": 1,
+      "version": "baseline",
+      "wall_ms": 2095.121,
+      "solve_us": 102692,
+      "cost": 1618080,
+      "binary_sha256": "25c4d6105ffa4223adb1ed6d834d6567bbcbd91d00db2555adbd1f30adce85af",
+      "input_sha256": "ad9ca87c58f3590a8c6ebba04af90a738ee9e9b8e788a279f5dd85b9d74a4aec"
+    },
+    {
+      "trial": 2,
+      "version": "baseline",
+      "wall_ms": 1851.913,
+      "solve_us": 90994,
+      "cost": 1506301,
+      "binary_sha256": "25c4d6105ffa4223adb1ed6d834d6567bbcbd91d00db2555adbd1f30adce85af",
+      "input_sha256": "c00dbcc4c1ff5937defa06aca6bed68520135c5219b1d4ba9c7e250e82ad96c8"
+    },
+    {
+      "trial": 2,
+      "version": "sax",
+      "wall_ms": 245.562,
+      "solve_us": 88405,
+      "cost": 1506301,
+      "binary_sha256": "c947064581431286087e6ff2bd1486d4e32011dc4cf9319b05c235c15930ae87",
+      "input_sha256": "c00dbcc4c1ff5937defa06aca6bed68520135c5219b1d4ba9c7e250e82ad96c8"
+    }
+  ],
+  "median_wall_speedup": 7.937,
+  "validation_status": "adopted after protocol, exact-depth-boundary, oversized recovery, independent-certificate and ASan/UBSan checks passed",
+  "adopted_binary_sha256": "639a68aee5bdf1f1ab621c7c80dfe5dd7c851c2d5b1a2ade833257bd0754a049"
+}

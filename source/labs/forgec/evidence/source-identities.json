@@ -1,0 +1,62 @@
+{
+  "saved_utc": "2026-10-15T18:26:40.340609+00:00",
+  "source_files": [
+    {
+      "path": "labs/forgec/Cargo.lock",
+      "sha256": "13b88e67352769cc5c29335ab34ee8a197960bf17064e7505f3dca1a7f5b3600"
+    },
+    {
+      "path": "labs/forgec/Cargo.toml",
+      "sha256": "546deb03012534ed705e47b1bef15d86f7f3397454a17cd8302cc37f9c515e90"
+    },
+    {
+      "path": "labs/forgec/examples/fibonacci.fc",
+      "sha256": "00786c8e94ad0178048b2329d9a1fc6c02fa6a1cdb102d6bcc907bcefdf1fbd1"
+    },
+    {
+      "path": "labs/forgec/examples/hello.fc",
+      "sha256": "f02618c5025fa499861400d240133501ef0e6a1360223ba7240f6aa41c6d0f8f"
+    },
+    {
+      "path": "labs/forgec/examples/mandelbrot.fc",
+      "sha256": "7ce5a877b712593a5d20919881d206e8c71fbfe1856f59de92d506075a02b35b"
+    },
+    {
+      "path": "labs/forgec/examples/primes.fc",
+      "sha256": "553f2be13cb58ebff81eabb0e406686c0d424ca80ff1af427969ca2146aaed61"
+    },
+    {
+      "path": "labs/forgec/src/image.rs",
+      "sha256": "067a9c2cd8d8daa51efa2001b121366c0b648b0a7ccaafcc486d75806e7d50be"
+    },
+    {
+      "path": "labs/forgec/src/lib.rs",
+      "sha256": "d77decfe8cfa8ceabfa551ea384fcc2c5d73ccaa0ac50b914eb21a1e3d9716c8"
+    },
+    {
+      "path": "labs/forgec/src/main.rs",
+      "sha256": "f516c6ed71c4c243ecf8050306cf98eaec8e0aa681cf550f6ce1ef112388e75d"
+    },
+    {
+      "path": "labs/forgec/src/native.rs",
+      "sha256": "ff9d943df4ad6edf1af6f431a700c6f5cda80d1b2afa30ecb0c79fd1c2cb2660"
+    },
+    {
+      "path": "labs/forgec/src/syntax.rs",
+      "sha256": "ee7802a696bf3e8dc8b5441ebb858960ce44eb78e161d23d44c0a745897d8507"
+    },
+    {
+      "path": "labs/forgec/tests/check_native.py",
+      "sha256": "40e1802cf2a2263558a2dc5d7144488d4dc1106947bb6e14f107c9f70faf514b"
+    },
+    {
+      "path": "labs/forgec/tests/frontend.rs",
+      "sha256": "b6c3fff3497cea2229a223015ffb4c1a1684374942ab877ffd2b403b6ec60598"
+    },
+    {
+      "path": "labs/forgec/tools/package_linux.py",
+      "sha256": "e75b204ffb48f6637d100e9ab86e03fee5c2ab6788acb2eadbc1084cf75f1712"
+    }
+  ],
+  "mandelbrot_preview": "Trailing spaces trimmed for readability; native harness compares every original output byte."
+}

@@ -1,0 +1,46 @@
+{
+  "phase": "completed",
+  "complete": true,
+  "requested_seconds": 16200,
+  "interval_seconds": 5.0,
+  "started_epoch": 1792069000.203207,
+  "operations": 3239,
+  "restarts": 19,
+  "crash_retries": 6,
+  "proofs_checked": 900,
+  "binary_sha256": {
+    "api.jar": "79310b109464a336fce1c255282bab8b840a3c39a3ebf3b063221ef317fbad22",
+    "chronicle": "a44b76dd5fc5faebe90898e9e7e36d605dda3d43bc21da9305bda3dba1cb9e45",
+    "dispatch": "25c4d6105ffa4223adb1ed6d834d6567bbcbd91d00db2555adbd1f30adce85af"
+  },
+  "scheduler_parallelism": 1,
+  "high_water_rss_kib": {
+    "api": 96608,
+    "chronicle": 217152,
+    "dispatch": 1880
+  },
+  "runner_pid": 20554,
+  "elapsed_seconds": 16205.082,
+  "last_operation": {
+    "elapsed_seconds": 16199.202,
+    "operation": "advance",
+    "latency_ms": 11.439,
+    "revision": 3239,
+    "ledger_records": 3240,
+    "ledger_bytes": 16240003,
+    "rss_kib": {
+      "api": 90492,
+      "chronicle": 217152,
+      "dispatch": 1880
+    }
+  },
+  "api_pid": 26869,
+  "last_head": "c62c6c1f812202b71fc20efe02905a93892a0c888790b98b068bed7f717d75ac",
+  "finished_epoch": 1792085205.2851806,
+  "final_ledger": {
+    "externally_anchored": true,
+    "head": "c62c6c1f812202b71fc20efe02905a93892a0c888790b98b068bed7f717d75ac",
+    "ok": true,
+    "records": 3240
+  }
+}

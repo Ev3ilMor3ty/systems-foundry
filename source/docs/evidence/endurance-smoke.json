@@ -1,0 +1,26 @@
+{
+  "phase": "completed",
+  "complete": true,
+  "requested_seconds": 90,
+  "elapsed_seconds": 90.617,
+  "operations": 853,
+  "restarts": 4,
+  "crash_retries": 1,
+  "proofs_checked": 238,
+  "binary_sha256": {
+    "api.jar": "0598036584c2228045862c6f20bf833e36418ee95564c8c85d3a77c0a5b034c4",
+    "chronicle": "a44b76dd5fc5faebe90898e9e7e36d605dda3d43bc21da9305bda3dba1cb9e45",
+    "dispatch": "25c4d6105ffa4223adb1ed6d834d6567bbcbd91d00db2555adbd1f30adce85af"
+  },
+  "high_water_rss_kib": {
+    "api": 93560,
+    "chronicle": 58332,
+    "dispatch": 1880
+  },
+  "final_ledger": {
+    "externally_anchored": true,
+    "head": "bbaa156656b5565c9f00320ab974a5a900ab3a0c5200d12456521111f0914d8b",
+    "ok": true,
+    "records": 854
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "externally_anchored": true,
+  "head": "8166981c96fda672c0315dc0b580979c9a524877dc7a8947d5a4670c9e61c731",
+  "ok": true,
+  "records": 2102,
+  "last_command_id": "endurance:2100",
+  "last_revision": 2101,
+  "scope": "preserved failed soak ledger; verification does not turn the failed soak into a pass"
+}

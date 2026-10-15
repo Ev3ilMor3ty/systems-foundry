@@ -1,0 +1,9 @@
+{
+  "ok": true,
+  "binary_sha256": "17dbc92889e12498451ceeea05efcf2f19f0be082fb718560f198bfb0aebfd5d",
+  "exact_recoveries": 323,
+  "independent_parity_checks": 24,
+  "corrupt_fragment_recoveries": 4,
+  "rejected_invalid_operations": 40,
+  "seconds": 0.903
+}

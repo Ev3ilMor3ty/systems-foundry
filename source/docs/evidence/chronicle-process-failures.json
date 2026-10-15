@@ -1,0 +1,1 @@
+{"ok": true, "checks": ["cross-process writer lock", "conflicting key rejected without losing server state", "acknowledged records survive writer SIGKILL with exact head", "real partial write detected; corrupt tail never silently truncated", "incomplete protocol line cannot append", "oversized file rejected before replay"]}

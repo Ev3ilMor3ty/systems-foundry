@@ -1,0 +1,11 @@
+[package]
+name = "forgec"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "An original small C-like language compiled directly to x86-64 ELF or PE"
+
+[dependencies]
+
+[profile.release]
+overflow-checks = true

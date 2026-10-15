@@ -1,0 +1,63 @@
+{
+  "saved_utc": "2026-10-15T18:03:37.553617+00:00",
+  "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "python": "3.12.14",
+  "compiler": "g++ (Debian 14.2.0-19) 14.2.0",
+  "qemu": "qemu-riscv32 version 10.0.13 (Debian 1:10.0.13+ds-0+deb13u1)",
+  "cpu_quota": "200000/100000 (two CPUs)",
+  "binary_scope": "These Linux identities are separate from hosted CI binaries and from the original Java application.",
+  "source_files": [
+    {
+      "path": "labs/rv32/Cargo.lock",
+      "sha256": "e21da68eb52d5e2261e3d2a262c17704788f21311d9a424a2f01ca82ec0dc864"
+    },
+    {
+      "path": "labs/rv32/Cargo.toml",
+      "sha256": "2f428f8227855091836a127eb1de0eaf078c9167c7b75b09df02b99c1eadeb06"
+    },
+    {
+      "path": "labs/rv32/examples/fibonacci.s",
+      "sha256": "f2cf9f67926f3473288292115e481c2f50169ac12498e60d0e96cd0418c821c9"
+    },
+    {
+      "path": "labs/rv32/examples/gcd.s",
+      "sha256": "9dbd326f4b4403dee84ae964c3ba56561621a452778f419602fd26d3d6848eed"
+    },
+    {
+      "path": "labs/rv32/examples/memory-sum.s",
+      "sha256": "671c430fc9a8efe821f762622dc66d24a8efd71fc9f20ae55ba7a9b5f31631ab"
+    },
+    {
+      "path": "labs/rv32/src/lib.rs",
+      "sha256": "f5305dbe5f81db07486a672a504b897ee8595e7f5cc04cb2658b52b41b64b335"
+    },
+    {
+      "path": "labs/rv32/src/main.rs",
+      "sha256": "abec592f788a7ced641694ab2df24ef140649e7390369d4d2d58f04b9d388865"
+    },
+    {
+      "path": "labs/rv32/tests/check_cli.py",
+      "sha256": "65625bf173db7ae7787fad8437bc68664cf521d0ee10d5d59c7370fe5b8d30b7"
+    },
+    {
+      "path": "labs/rv32/tests/isa.rs",
+      "sha256": "d4e63cedbadf3aaad44f58c94f3d73132e118cf2cd416da1f589349e1263b47e"
+    },
+    {
+      "path": "labs/rv32/tools/assemble.py",
+      "sha256": "0375c0b8597c7faf7b2dae0e3a8b9ba91f1887b87290602d3076577bf041e624"
+    },
+    {
+      "path": "labs/shardvault/CMakeLists.txt",
+      "sha256": "be7512c0a0587be1f2f909a31447e9648dfc67be0fa688c85ff204dabb655e02"
+    },
+    {
+      "path": "labs/shardvault/src/main.cpp",
+      "sha256": "7c73722d1def7eba489501caac5aff11f0209909665ecc017fd45cd203adcf2a"
+    },
+    {
+      "path": "labs/shardvault/tests/check.py",
+      "sha256": "1f995e7db47a324c2c7342f51faf5538448213a3abee84cabecb311ecfeed250"
+    }
+  ]
+}

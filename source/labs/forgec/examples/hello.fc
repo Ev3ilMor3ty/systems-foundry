@@ -1,0 +1,5 @@
+int main() {
+    print("Hello from ForgeC.");
+    print("This executable was emitted directly from my language.");
+    return 0;
+}

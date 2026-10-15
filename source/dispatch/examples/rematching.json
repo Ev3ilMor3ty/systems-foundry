@@ -1,0 +1,9 @@
+{
+  "workers": 2,
+  "tasks": 2,
+  "edges": [
+    { "worker": 0, "task": 0, "cost": 1 },
+    { "worker": 0, "task": 1, "cost": 2 },
+    { "worker": 1, "task": 0, "cost": 2 }
+  ]
+}

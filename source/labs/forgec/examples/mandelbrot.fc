@@ -1,0 +1,28 @@
+// Integer fixed-point Mandelbrot. Each coordinate has a scale of 256.
+int main() {
+    int y = -12;
+    while (y < 12) {
+        int x = -40;
+        while (x < 40) {
+            int cx = x * 256 / 24 - 128;
+            int cy = y * 256 / 12;
+            int zx = 0;
+            int zy = 0;
+            int iterations = 0;
+            while (zx * zx + zy * zy < 262144 && iterations < 32) {
+                int next_x = zx * zx / 256 - zy * zy / 256 + cx;
+                zy = 2 * zx * zy / 256 + cy;
+                zx = next_x;
+                iterations = iterations + 1;
+            }
+            if (iterations == 32) { put(35); }
+            else if (iterations > 12) { put(43); }
+            else if (iterations > 5) { put(46); }
+            else { put(32); }
+            x = x + 1;
+        }
+        put(10);
+        y = y + 1;
+    }
+    return 0;
+}
