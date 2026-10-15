@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "checks": [
+    "PASS 2312 brute-force cross-checks, rematching, bounds and 64-bit cost",
+    "PASS 2312 brute-force cross-checks, rematching, bounds and 64-bit cost",
+    "PASS protocol validation and recovery across malformed requests",
+    "PASS 350 independently checked primal/dual certificates and tamper rejection",
+    "PASS pretty-printed CLI input and bounded nesting with server recovery",
+    "PASS exact depth boundary, quoted delimiters, oversized-line recovery",
+    "PASS protocol validation and recovery across malformed requests",
+    "PASS 350 independently checked primal/dual certificates and tamper rejection",
+    "PASS pretty-printed CLI input and bounded nesting with server recovery",
+    "PASS exact depth boundary, quoted delimiters, oversized-line recovery"
+  ],
+  "binary_sha256": "639a68aee5bdf1f1ab621c7c80dfe5dd7c851c2d5b1a2ade833257bd0754a049",
+  "source_sha256": "0f351180bffd10c15e13e97199dcdcf21f825a1547ca2fe5649de6371189160f",
+  "sanitizer_binary_sha256": "c6074cf4269c930f4b29db4f708e12545fd8933312a35531be45c5e065b71f05"
+}

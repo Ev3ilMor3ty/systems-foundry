@@ -6,6 +6,35 @@
 #include <iostream>
 #include <string>
 using nlohmann::json;
+
+// Validate syntax and depth without the slower DOM callback path.
+class DepthGuard final : public nlohmann::json_sax<json> {
+  std::size_t depth = 0;
+
+public:
+  bool null() override { return true; }
+  bool boolean(bool) override { return true; }
+  bool number_integer(json::number_integer_t) override { return true; }
+  bool number_unsigned(json::number_unsigned_t) override { return true; }
+  bool number_float(json::number_float_t, const json::string_t &) override { return true; }
+  bool string(json::string_t &) override { return true; }
+  bool binary(json::binary_t &) override { return true; }
+  bool start_object(std::size_t) override { return ++depth <= 32; }
+  bool key(json::string_t &) override { return true; }
+  bool end_object() override {
+    --depth;
+    return true;
+  }
+  bool start_array(std::size_t) override { return ++depth <= 32; }
+  bool end_array() override {
+    --depth;
+    return true;
+  }
+  bool parse_error(std::size_t, const std::string &, const json::exception &) override {
+    return false;
+  }
+};
+
 static int integer(const json &value) {
   if (!value.is_number_integer() || value < 0 || value > 256)
     throw std::invalid_argument("expected integer in 0..256");
@@ -18,11 +47,10 @@ static json result_json(const foundry::Matching &r) {
   return {{"cardinality", r.cardinality}, {"cost", r.cost}, {"pairs", pairs}};
 }
 static json run(const std::string &line) {
-  auto request = json::parse(line, [](int depth, json::parse_event_t, json &) {
-    if (depth > 32)
-      throw std::invalid_argument("JSON nesting exceeds 32 levels");
-    return true;
-  });
+  DepthGuard guard;
+  if (!json::sax_parse(line, &guard))
+    throw std::invalid_argument("Invalid JSON or nesting exceeds 32 levels");
+  auto request = json::parse(line);
   if (!request.is_object())
     throw std::invalid_argument("request must be an object");
   int workers = integer(request.at("workers")), tasks = integer(request.at("tasks"));

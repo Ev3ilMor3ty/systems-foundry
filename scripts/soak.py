@@ -25,9 +25,12 @@ def rss(pid):
 
 
 def main():
+    if not __debug__:
+        raise RuntimeError("Endurance validation requires assertions; run without -O")
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--seconds", type=int, default=16200)
     parser.add_argument("--interval", type=float, default=5)
+    parser.add_argument("--scheduler-parallelism", type=int, choices=range(1, 9))
     parser.add_argument("--output", type=pathlib.Path, required=True)
     parser.add_argument("--binaries", type=pathlib.Path)
     parser.add_argument("--web-root", type=pathlib.Path, default=ROOT)
@@ -62,6 +65,7 @@ def main():
         "crash_retries": 0,
         "proofs_checked": 0,
         "binary_sha256": identity,
+        "scheduler_parallelism": args.scheduler_parallelism,
         "high_water_rss_kib": {},
     }
     save(args.output / "checkpoint.json", checkpoint)
@@ -69,7 +73,15 @@ def main():
         binaries,
         args.output / "state",
         args.web_root,
-        java_options=["-Xms32m", "-Xmx256m"],
+        java_options=["-Xms32m", "-Xmx256m"]
+        + (
+            [
+                f"-Djdk.virtualThreadScheduler.parallelism={args.scheduler_parallelism}",
+                f"-Djdk.virtualThreadScheduler.maxPoolSize={args.scheduler_parallelism}",
+            ]
+            if args.scheduler_parallelism
+            else []
+        ),
     )
     start = time.monotonic()
     previous = None

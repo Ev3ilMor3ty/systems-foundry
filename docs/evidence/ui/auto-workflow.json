@@ -1,0 +1,12 @@
+{
+  "ok": true,
+  "binary_sha256": {
+    "api.jar": "79310b109464a336fce1c255282bab8b840a3c39a3ebf3b063221ef317fbad22",
+    "chronicle": "a44b76dd5fc5faebe90898e9e7e36d605dda3d43bc21da9305bda3dba1cb9e45",
+    "dispatch": "639a68aee5bdf1f1ab621c7c80dfe5dd7c851c2d5b1a2ade833257bd0754a049"
+  },
+  "completed_requests": 12,
+  "final_tick": 65,
+  "browser_clock_jumps": 12,
+  "clock_note": "Browser timers accelerated; real Java/C++/Rust requests and durability remained active. This is a workflow test, not elapsed-time endurance evidence."
+}

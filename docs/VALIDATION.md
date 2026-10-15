@@ -8,13 +8,14 @@ The repository records finite checks rather than claims of production readiness.
 | --- | --- |
 | C++ exactness | 512 exhaustive 3×3 graph topologies plus 1,800 seeded random small instances, compared with brute force |
 | Independent proofs | 350 seeded larger random inputs checked by Python, plus Java certificate checks on the live API boundary |
-| C++ safety/protocol | Address/undefined-behavior sanitizer run; rematching, 64-bit totals, bounds, malformed requests, nesting limits and pretty-printed CLI input |
+| C++ safety/protocol | Address/undefined-behavior sanitizer runs on both the matching library and JSON CLI; rematching, 64-bit totals, bounds, malformed requests, nesting limits and pretty-printed CLI input |
 | Rust ledger | Four integration-style Rust tests covering reopen/idempotency, locks, corruption, reordering, truncation, limits and multi-record replay |
 | Real filesystem faults | Writer SIGKILL after acknowledgements, cross-process locks, actual partial write/EFBIG, retained corrupt tail, incomplete protocol input and oversized file rejection |
 | Java | 17 JUnit tests across state/concurrency/storage behavior, real HTTP, native peer faults and proof verification |
 | Live integration | Actual Java → C++/Rust flow; all initial requests delivered; restart with exact state/head; eight crash timings with exactly-once retries; killed dependencies cannot commit partial changes |
 | Browser | Real API, proof download independently verified, text safely rendered, filters and controls, visible failure/recovery, widths 320/390/768/1024/1440 with no document overflow |
 | Automated accessibility | Zero axe WCAG 2 A/AA and 2.1 AA violations in the tested desktop state; this is not full conformance certification |
+| Auto workflow | All 12 requests delivered and carriers released through real API calls, using an accelerated browser timer; separate from elapsed-time endurance |
 | UI model | Six Node tests covering metrics, routes, bounds, stale revisions, ordering and dispatch eligibility |
 | Endurance smoke | Corrected workload completed 853 operations, 238 proof checks, four restarts including one crash retry, and final trusted-head ledger verification |
 
@@ -46,3 +47,7 @@ The old build deterministically returned HTTP 503 after about three seconds when
 See [before/after evidence](evidence/carrier-starvation-comparison.json). This reproduces and fixes a starvation path consistent with the overnight timeout timing. The old soak did not retain the failed response or Java cause, so the exact original cause is not proven. The failed run remains incomplete. New failures now record the retry response and native exception type instead of discarding that context.
 
 The initial Linux browser CI failure came from waiting for network idle on a page with a live event stream. The harness now waits for DOM content and the actual application-ready state; it does not weaken the page's content security policy.
+
+The fixed build also completed a fresh one-carrier smoke: 616 operations, 172 proof checks and three restarts including a crash retry. A new separately frozen 4.5-hour one-carrier run is in progress; it has no completed endurance result yet.
+
+The adopted parser candidate is tested separately from the still-running carrier-fix endurance job. That job keeps its original frozen C++ binary; its result must not be relabeled as a full endurance result for a changed native binary.

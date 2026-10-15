@@ -16,5 +16,7 @@ test: build/matching-test build/foundry-dispatch
 sanitize: | build
 	$(CXX) $(CPPFLAGS) -std=c++20 -O1 -g -fsanitize=address,undefined -fno-omit-frame-pointer tests/matching_test.cpp -o build/matching-sanitize
 	./build/matching-sanitize
+	$(CXX) $(CPPFLAGS) -std=c++20 -O1 -g -fsanitize=address,undefined -fno-omit-frame-pointer src/main.cpp -o build/dispatch-sanitize
+	python3 tests/protocol_test.py --binary $(CURDIR)/build/dispatch-sanitize
 clean:
 	rm -rf build

@@ -21,7 +21,7 @@ A single CLI invocation accepts a complete JSON document, including pretty-print
 
 The response contains `optimal`, `greedy`, `certificate`, `solve_us` and `algorithm`. `solve_us` covers the matching algorithm only; it excludes parsing, certificate construction, output and process startup. Greedy is a deterministic reference heuristic, not another exact solver.
 
-Dimensions are 0..256, costs are nonnegative integers up to one billion, and each worker/task edge must be unique. Costs use checked model bounds and 64-bit arithmetic. Input is bounded to 8 MiB and nesting to 32 levels. Negative, fractional, repeated or out-of-range edges fail with an explicit error.
+Dimensions are 0..256, costs are nonnegative integers up to one billion, and each worker/task edge must be unique. Costs use checked model bounds and 64-bit arithmetic. Input is bounded to 8 MiB and nesting to 32 containers including the root. A SAX syntax/depth pass precedes normal DOM parsing to retain the depth guard without the slower DOM callback path. Negative, fractional, repeated or out-of-range edges fail with an explicit error.
 
 ## Verify without optimizing
 

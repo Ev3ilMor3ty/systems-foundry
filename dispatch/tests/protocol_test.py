@@ -1,7 +1,12 @@
 import json, subprocess
 from pathlib import Path
 
-binary = Path(__file__).resolve().parents[1] / "build/foundry-dispatch"
+import argparse
+
+ROOT = Path(__file__).resolve().parents[1]
+parser = argparse.ArgumentParser()
+parser.add_argument("--binary", type=Path, default=ROOT / "build/foundry-dispatch")
+binary = parser.parse_args().binary
 cases = [
     (
         {
@@ -51,7 +56,7 @@ assert not responses[-2]["ok"] and responses[-1]["ok"]
 print("PASS protocol validation and recovery across malformed requests")
 import sys, copy, random
 
-sys.path.insert(0, str(binary.parents[1] / "tools"))
+sys.path.insert(0, str(ROOT / "tools"))
 from check_certificate import verify
 
 for i in [0, 1, 7]:
@@ -110,3 +115,33 @@ p = subprocess.run(
 )
 assert [json.loads(x)["ok"] for x in p.stdout.splitlines()] == [False, True]
 print("PASS pretty-printed CLI input and bounded nesting with server recovery")
+
+# Depth is counted in containers, including the top-level object.
+for nested, expected in [(31, True), (32, False)]:
+    problem = cases[0][0].copy()
+    value = 0
+    for _ in range(nested):
+        value = [value]
+    problem["metadata"] = value
+    response = subprocess.run(
+        [binary], input=json.dumps(problem), capture_output=True, text=True
+    )
+    assert json.loads(response.stdout)["ok"] == expected
+special = cases[0][0].copy()
+special["metadata"] = '[braces] {inside} \\"quotes\\" \u2603'
+assert json.loads(
+    subprocess.run(
+        [binary], input=json.dumps(special), capture_output=True, text=True, check=True
+    ).stdout
+)["ok"]
+oversized = "x" * (8 * 1024 * 1024 + 1)
+p = subprocess.run(
+    [binary, "--serve"],
+    input=oversized + "\n" + json.dumps(cases[0][0]) + "\n",
+    capture_output=True,
+    text=True,
+    check=True,
+    timeout=20,
+)
+assert [json.loads(x)["ok"] for x in p.stdout.splitlines()] == [False, True]
+print("PASS exact depth boundary, quoted delimiters, oversized-line recovery")

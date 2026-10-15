@@ -2,18 +2,18 @@
   "ok": true,
   "scheduler_parallelism": 1,
   "scheduler_max_pool_size": 1,
-  "first_command_ms": 101.783,
+  "first_command_ms": 85.793,
   "concurrent_write_batches": 5,
   "writes_per_batch": 8,
   "concurrent_snapshots": 80,
   "binary_sha256": {
     "api.jar": "79310b109464a336fce1c255282bab8b840a3c39a3ebf3b063221ef317fbad22",
     "chronicle": "a44b76dd5fc5faebe90898e9e7e36d605dda3d43bc21da9305bda3dba1cb9e45",
-    "dispatch": "25c4d6105ffa4223adb1ed6d834d6567bbcbd91d00db2555adbd1f30adce85af"
+    "dispatch": "639a68aee5bdf1f1ab621c7c80dfe5dd7c851c2d5b1a2ade833257bd0754a049"
   },
   "final_ledger": {
     "externally_anchored": true,
-    "head": "5d607a273f86c469d1d70dbb8353173b57aced13a1a58e3e3654022a3c2b6c47",
+    "head": "c4943c11abdad2d7d5f616a8a823c7a18bf67ed6a501e9c5e0b3428c0a0e825f",
     "ok": true,
     "records": 8
   }
