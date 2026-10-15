@@ -19,6 +19,14 @@ Java coordinates a fictional logistics district. C++ makes the dispatch decision
 
 The separate [WorkPulse repository](https://github.com/Ev3ilMor3ty/kernel-workpulse) contains the Linux kernel C module, Rust telemetry reader and networkless QEMU tests.
 
+## Downloads
+
+- [Linux x86-64 portable preview ZIP](https://github.com/Ev3ilMor3ty/systems-foundry/archive/refs/tags/v0.1.0-linux-r2.zip): extract everything and run `bash start.sh`; requires Java 21 and the documented Linux runtime.
+- [Complete source ZIP](https://github.com/Ev3ilMor3ty/systems-foundry/archive/refs/tags/v0.1.0.zip): Linux and native Windows build routes are in [the English installation guide](docs/INSTALL.md).
+- [Portable packaging details and checksums](docs/PACKAGING.md).
+
+The application is a preview. The corrected long endurance run is still in progress and is not presented as a pass.
+
 ## Run it
 
 Requires **JDK 21**, **Rust 1.85+**, **G++ with C++20**, **Maven 3.8.7+** and Make on Linux. Node is needed for frontend checks, not to run the dashboard.

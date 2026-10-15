@@ -30,22 +30,22 @@ def main():
     a.output.mkdir(parents=True)
     source = a.output / "source"
     source.mkdir()
-    files = subprocess.check_output(["git", "-C", str(ROOT), "ls-files", "-z"]).split(
-        b"\0"
+    archive = subprocess.check_output(
+        ["git", "-C", str(ROOT), "archive", "--format=tar", "HEAD"]
     )
-    for entry in files:
-        if not entry:
-            continue
-        relative = pathlib.Path(os.fsdecode(entry))
-        destination = source / relative
-        destination.parent.mkdir(parents=True, exist_ok=True)
-        # Read the committed bytes, not platform checkout newline conversions.
-        data = subprocess.check_output(
-            ["git", "-C", str(ROOT), "show", "HEAD:" + relative.as_posix()]
-        )
-        destination.write_bytes(data)
-        if relative.suffix == ".sh":
-            destination.chmod(0o755)
+    # Use Git's archive conversion so source line endings match the eventual
+    # GitHub ZIP, including the repository's PowerShell CRLF attributes.
+    with tarfile.open(fileobj=io.BytesIO(archive)) as contents:
+        for member in contents:
+            if member.isdir():
+                continue
+            relative = pathlib.PurePosixPath(member.name)
+            if not member.isfile() or relative.is_absolute() or ".." in relative.parts:
+                raise ValueError("Unsupported source archive entry")
+            destination = source / pathlib.Path(*relative.parts)
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.write_bytes(contents.extractfile(member).read())
+            destination.chmod(member.mode & 0o777)
     (a.output / "bin").mkdir()
     (a.output / "app").mkdir()
     native = {

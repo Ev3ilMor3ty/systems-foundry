@@ -15,7 +15,7 @@ python3 scripts/package_smoke.py --package ../foundry-linux-preview
 
 The metadata must describe the selected Linux platform. Notices are collected from the runtime/build dependency closure; test-only and unrelated-target crates are not redistributed. Missing discovered license text stops packaging. Upstream Rust standard-library license texts and Apache/nlohmann notices are included as well.
 
-The generator refuses an existing destination and refuses a dirty Git checkout. It copies committed source bytes to keep newline conversion from changing the source identity. `BUILD-INFO.json` records the source commit and binary hashes; `SHA256SUMS.txt` covers the payload. The smoke test checks the contents, copies the package into a fresh path with spaces, launches its own service, makes a real dispatch and verifies the proof.
+The generator refuses an existing destination and refuses a dirty Git checkout. It copies Git archive output, including the repository's PowerShell CRLF convention, before computing checksums. This matches the working-tree conversion used by GitHub-generated ZIPs. `BUILD-INFO.json` records the source commit and binary hashes; `SHA256SUMS.txt` covers the payload. The smoke test checks the contents, copies the package into a fresh path with spaces, launches its own service, makes a real dispatch and verifies the proof.
 
 The current Linux build requires glibc 2.38+ and libstdc++ with GLIBCXX_3.4.32. It was tested on Debian 13 x86-64. Rebuild the source for an older Linux runtime. Native Windows has a passing source-build CI job and its own PowerShell guide; this Linux package does not contain Windows executables.
 
