@@ -2,7 +2,7 @@
 """Make a Linux portable directory with the tested binaries, source and notices.
 
 Requires a clean Git checkout, built components and `cargo metadata` JSON for the
-locked ledger dependencies. The package needs Java 21, not a Rust/C++ toolchain.
+locked ledger dependencies filtered for x86_64-unknown-linux-gnu. The package needs Java 21, not a Rust/C++ toolchain.
 """
 import argparse, hashlib, json, os, pathlib, platform, shutil, subprocess
 
@@ -67,8 +67,23 @@ def main():
         notices / "nlohmann-json-MIT.txt",
     )
     metadata = json.loads(a.cargo_metadata.read_text())
+    # Cargo metadata includes test-only and other-target packages. Distribute
+    # notices for the selected platform's actual runtime/build closure.
+    nodes = {node["id"]: node for node in metadata["resolve"]["nodes"]}
+    selected = set()
+    pending = [metadata["resolve"]["root"]]
+    while pending:
+        package_id = pending.pop()
+        if package_id in selected:
+            continue
+        selected.add(package_id)
+        for dependency in nodes[package_id]["deps"]:
+            if any(kind["kind"] in [None, "build"] for kind in dependency["dep_kinds"]):
+                pending.append(dependency["pkg"])
     dependencies = []
     for package in metadata["packages"]:
+        if package["id"] not in selected:
+            continue
         if package.get("source") is None:
             continue
         name = f"{package['name']}-{package['version']}"
