@@ -1,0 +1,27 @@
+{
+  "ok": true,
+  "binary_sha256": {
+    "api.jar": "79310b109464a336fce1c255282bab8b840a3c39a3ebf3b063221ef317fbad22",
+    "chronicle": "a44b76dd5fc5faebe90898e9e7e36d605dda3d43bc21da9305bda3dba1cb9e45",
+    "dispatch": "25c4d6105ffa4223adb1ed6d834d6567bbcbd91d00db2555adbd1f30adce85af"
+  },
+  "viewports": [
+    320,
+    390,
+    768,
+    1024,
+    1440
+  ],
+  "wcag_violations": 0,
+  "page_errors": [],
+  "checks": [
+    "real dispatch",
+    "downloaded proof verified",
+    "untrusted text rendered safely",
+    "state filters",
+    "tick controls",
+    "visible failure and recovery",
+    "responsive layout",
+    "WCAG automated checks"
+  ]
+}
