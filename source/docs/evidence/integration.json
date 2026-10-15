@@ -1,0 +1,23 @@
+{
+  "ok": true,
+  "checks": [
+    "real optimizer dispatch and independent proof",
+    "all twelve tasks complete and carriers released",
+    "graceful restart preserves state and exact chain head",
+    "eight crash timings with exactly-once idempotent retries",
+    "optimizer death cannot commit a partial plan",
+    "ledger death fails writes closed",
+    "final ledger independently reverified after all faults"
+  ],
+  "binary_sha256": {
+    "api.jar": "79310b109464a336fce1c255282bab8b840a3c39a3ebf3b063221ef317fbad22",
+    "chronicle": "a44b76dd5fc5faebe90898e9e7e36d605dda3d43bc21da9305bda3dba1cb9e45",
+    "dispatch": "639a68aee5bdf1f1ab621c7c80dfe5dd7c851c2d5b1a2ade833257bd0754a049"
+  },
+  "final_ledger": {
+    "externally_anchored": false,
+    "head": "4a3977bf6d4c5077e0a89f528c4b19a2ceb5166b4931524b52e570c80d49d717",
+    "ok": true,
+    "records": 15
+  }
+}

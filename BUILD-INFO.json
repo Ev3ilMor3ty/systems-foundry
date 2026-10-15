@@ -1,0 +1,10 @@
+{
+  "source_commit": "a87e8d9640b96d498cc09d17d80e582531430bdf",
+  "platform": "Linux x86-64",
+  "requirements": "Java21+, glibc2.38+, GLIBCXX3.4.32",
+  "binary_sha256": {
+    "app/control-api.jar": "79310b109464a336fce1c255282bab8b840a3c39a3ebf3b063221ef317fbad22",
+    "bin/foundry-chronicle": "a44b76dd5fc5faebe90898e9e7e36d605dda3d43bc21da9305bda3dba1cb9e45",
+    "bin/foundry-dispatch": "639a68aee5bdf1f1ab621c7c80dfe5dd7c851c2d5b1a2ade833257bd0754a049"
+  }
+}
