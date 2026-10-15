@@ -2,3 +2,5 @@ dispatch/vendor/** linguist-vendored
 *.sh text eol=lf
 *.ps1 text eol=crlf
 *.png binary
+*.mp4 binary
+*.gif binary

@@ -2,6 +2,36 @@
 
 **A small original C-like language that compiles directly to native x86-64.**
 
+[![Native Linux and Windows checks](https://github.com/Ev3ilMor3ty/systems-foundry/actions/workflows/forgec.yml/badge.svg)](https://github.com/Ev3ilMor3ty/systems-foundry/actions/workflows/forgec.yml)
+
+[![ForgeC compiling and running a Mandelbrot program](showcase/forgec-preview.gif)](showcase/forgec-demo.mp4)
+
+**[Download the compiler](https://github.com/Ev3ilMor3ty/systems-foundry/releases/tag/v0.3.0)**
+· **[Watch / download the 22-second demo](showcase/forgec-demo.mp4)**
+· **[Windows setup](#windows)**
+· **[Language reference](LANGUAGE.md)**
+
+The loop replays actual captured compiler output with edited pacing. It shows
+the compiled Linux executable drawing the fractal, rather than an interpreter
+rendering it. Both native target formats have their own execution checks.
+
+## Try the Linux binary
+
+Download and extract the
+[portable compiler ZIP](https://github.com/Ev3ilMor3ty/systems-foundry/archive/refs/tags/v0.3.0-linux.zip).
+From the extracted folder:
+
+```bash
+chmod u+x forgec
+./forgec build source/labs/forgec/examples/mandelbrot.fc -o fractal --target linux
+./fractal
+```
+
+Requires x86-64 Linux, glibc 2.34+ and libgcc_s. No Rust or compiler tools are
+needed to use that binary. [Windows source-build instructions are below](#windows).
+
+## What this compiler does
+
 ForgeC has its own lexer, precedence parser, scope and function checks, constant
 folder, machine-code generator and executable writers. It emits a Linux ELF64
 or Windows PE32+ program itself. Compiling a `.fc` file does not invoke GCC,

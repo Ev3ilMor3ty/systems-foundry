@@ -1,0 +1,69 @@
+{
+  "compiler_sha256": "f08fe1527a1e3a8fcd7365c37dcf13f490e1dc15aedaefe9bebda9cd2ac96ff9",
+  "source": "// Integer fixed-point Mandelbrot. Each coordinate has a scale of 256.\nint main() {\n    int y = -12;\n    while (y < 12) {\n        int x = -40;\n        while (x < 40) {\n            int cx = x * 256 / 24 - 128;\n            int cy = y * 256 / 12;\n            int zx = 0;\n            int zy = 0;\n            int iterations = 0;\n            while (zx * zx + zy * zy < 262144 && iterations < 32) {\n                int next_x = zx * zx / 256 - zy * zy / 256 + cx;\n                zy = 2 * zx * zy / 256 + cy;\n                zx = next_x;\n                iterations = iterations + 1;\n            }\n            if (iterations == 32) { put(35); }\n            else if (iterations > 12) { put(43); }\n            else if (iterations > 5) { put(46); }\n            else { put(32); }\n            x = x + 1;\n        }\n        put(10);\n        y = y + 1;\n    }\n    return 0;\n}\n",
+  "source_sha256": "7ce5a877b712593a5d20919881d206e8c71fbfe1856f59de92d506075a02b35b",
+  "commands": [
+    {
+      "argv": [
+        "./forgec",
+        "check",
+        "mandelbrot.fc"
+      ],
+      "exit_status": 0,
+      "stdout": "{\"ok\":true,\"functions\":1}\n",
+      "stderr": "",
+      "elapsed_seconds": 0.001461
+    },
+    {
+      "argv": [
+        "./forgec",
+        "build",
+        "mandelbrot.fc",
+        "-o",
+        "fractal",
+        "--target",
+        "linux"
+      ],
+      "exit_status": 0,
+      "stdout": "{\"ok\":true,\"target\":\"linux-x86_64\",\"bytes\":5502,\"functions\":1,\"constant_folding\":true}\n",
+      "stderr": "",
+      "elapsed_seconds": 0.001229
+    },
+    {
+      "argv": [
+        "./fractal"
+      ],
+      "exit_status": 0,
+      "stdout": "                                              ...+..#                           \n                                             ....++...                          \n                                           ...+####++..                         \n                                      ........######+.....                      \n                                    ..++...#++++###+++.++......                 \n                                  ....###################+###+.                 \n                                ......++####################+...                \n                    ................#########################...                \n                    ..+....++......+###########################+.               \n                   ....+#######+..+###########################..                \n                 .....+##########++##########################+#.                \n           ........#++#######################################...                \n     ######################################################+...                 \n           ........#++#######################################...                \n                 .....+##########++##########################+#.                \n                   ....+#######+..+###########################..                \n                    ..+....++......+###########################+.               \n                    ................#########################...                \n                                ......++####################+...                \n                                  ....###################+###+.                 \n                                    ..++...#++++###+++.++......                 \n                                      ........######+.....                      \n                                           ...+####++..                         \n                                             ....++...                          \n",
+      "stderr": "",
+      "elapsed_seconds": 0.000738
+    },
+    {
+      "argv": [
+        "./forgec",
+        "build",
+        "mandelbrot.fc",
+        "-o",
+        "fractal.exe",
+        "--target",
+        "windows"
+      ],
+      "exit_status": 0,
+      "stdout": "{\"ok\":true,\"target\":\"windows-x86_64\",\"bytes\":2560,\"functions\":1,\"constant_folding\":true}\n",
+      "stderr": "",
+      "elapsed_seconds": 0.001205
+    }
+  ],
+  "presentation": "Rendered replay of actual command output. Pacing is edited; no execution-speed claim. JSON result is reformatted for readability.",
+  "fractal_sha256": "c778c4833cf14e08e7def07b4f858c1face7c673e58c18fef3143aa7b96121ee",
+  "executables": {
+    "fractal": {
+      "bytes": 5502,
+      "sha256": "a9f03c7c78e1386b6b0dcd330bac3b620049500604a0fbcddc9017062f464eb2"
+    },
+    "fractal.exe": {
+      "bytes": 2560,
+      "sha256": "1422989117296c08f97f39913c374821d3a838e5b727b1889dc071a64d36d6bd"
+    }
+  }
+}

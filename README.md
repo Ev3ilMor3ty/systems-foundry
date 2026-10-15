@@ -2,7 +2,26 @@
 
 [![Build and verify](https://github.com/Ev3ilMor3ty/systems-foundry/actions/workflows/checks.yml/badge.svg)](https://github.com/Ev3ilMor3ty/systems-foundry/actions/workflows/checks.yml)
 
-**A small operations system with an optimizer you can verify and a ledger you can inspect.**
+**Systems projects you can run: a native compiler, a RISC-V interpreter,
+recoverable file storage and a working Java/C++/Rust control room.**
+
+## Start with ForgeC
+
+[ForgeC](labs/forgec/) is a small C-like language with a compiler written in
+Rust. It emits native x86-64 Linux ELF and Windows PE executables directly.
+The demo shows its compiled Mandelbrot program drawing a terminal fractal.
+
+[![ForgeC compiles and runs a native Mandelbrot program](labs/forgec/showcase/forgec-preview.gif)](labs/forgec/showcase/forgec-demo.mp4)
+
+**[Try ForgeC](labs/forgec/)** · **[Compiler download](https://github.com/Ev3ilMor3ty/systems-foundry/releases/tag/v0.3.0)**
+· **[Watch / download the demo](labs/forgec/showcase/forgec-demo.mp4)**
+
+Functions, recursion, lexical scopes, loops and signed 64-bit arithmetic are
+implemented. Native Linux and Windows checks execute generated programs with
+constant folding on and off. The presentation replays real output with edited
+pacing; see [the language and its current limits](labs/forgec/LANGUAGE.md).
+
+## The original control room
 
 Java coordinates a fictional logistics district. C++ makes the dispatch decision. Rust commits the event before the browser sees it. A dependency-free HTML/CSS/JavaScript interface puts the whole workflow on one screen.
 

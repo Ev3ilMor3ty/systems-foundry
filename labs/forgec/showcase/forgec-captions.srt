@@ -1,0 +1,19 @@
+1
+00:00:00,000 --> 00:00:03,000
+ForgeC: a small C-like language and native compiler.
+
+2
+00:00:03,000 --> 00:00:07,000
+Start with a fixed-point Mandelbrot program.
+
+3
+00:00:07,000 --> 00:00:11,500
+Compile the source directly to a native Linux executable.
+
+4
+00:00:11,500 --> 00:00:18,000
+Run it: the generated program draws this fractal.
+
+5
+00:00:18,000 --> 00:00:22,000
+Try ForgeC: code, examples and build guides on GitHub.

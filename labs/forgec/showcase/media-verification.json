@@ -1,0 +1,41 @@
+{
+  "ok": true,
+  "files": {
+    "forgec-demo.mp4": {
+      "bytes": 346723,
+      "sha256": "6f8e340231c4b806362e1270f89cce37a5755a74b70cac35a89a284a79919531",
+      "width": 1280,
+      "height": 720,
+      "seconds": 22,
+      "frames": 528,
+      "codec": "h264",
+      "pixel_format": "yuv420p",
+      "audio": false,
+      "full_decode": "passed"
+    },
+    "forgec-vertical.mp4": {
+      "bytes": 323744,
+      "sha256": "3fcef2df9f1c46569e1ebb6c4cc8441381833a7fdb0f79c61fdc1658a8fc2755",
+      "width": 720,
+      "height": 1280,
+      "seconds": 22,
+      "frames": 528,
+      "codec": "h264",
+      "pixel_format": "yuv420p",
+      "audio": false,
+      "full_decode": "passed"
+    },
+    "forgec-preview.gif": {
+      "width": 768,
+      "height": 432,
+      "frames": 63,
+      "bytes": 159554
+    },
+    "source_recording": {
+      "compiler_sha256": "f08fe1527a1e3a8fcd7365c37dcf13f490e1dc15aedaefe9bebda9cd2ac96ff9",
+      "fractal_output_matches_prior_checked_sample": true,
+      "rendered_terminal_replay": true,
+      "pacing_edited": true
+    }
+  }
+}
