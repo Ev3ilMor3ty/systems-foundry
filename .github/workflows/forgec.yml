@@ -1,0 +1,41 @@
+name: Compile and execute ForgeC
+on:
+  push:
+    branches: [main]
+    paths: ['labs/forgec/**', '.github/workflows/forgec.yml']
+  pull_request:
+    paths: ['labs/forgec/**', '.github/workflows/forgec.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            compiler: labs/forgec/target/release/forgec
+          - os: windows-latest
+            compiler: labs/forgec/target/release/forgec.exe
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: rustup toolchain install 1.85.1 --profile minimal --component rustfmt
+      - run: rustup default 1.85.1
+      - run: cargo fmt --manifest-path labs/forgec/Cargo.toml --check
+      - run: cargo test --manifest-path labs/forgec/Cargo.toml --locked
+      - run: cargo build --release --manifest-path labs/forgec/Cargo.toml --locked
+      - run: python -c "from pathlib import Path; Path('labs/build/compiler-evidence').mkdir(parents=True,exist_ok=True)"
+      - name: Execute generated native programs against independent expectations
+        run: python labs/forgec/tests/check_native.py ${{ matrix.compiler }} --output labs/build/compiler-evidence/native.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: forgec-evidence-${{ runner.os }}
+          path: labs/build/compiler-evidence/*.json
+          retention-days: 14

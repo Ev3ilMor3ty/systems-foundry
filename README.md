@@ -19,10 +19,13 @@ Java coordinates a fictional logistics district. C++ makes the dispatch decision
 
 The separate [WorkPulse repository](https://github.com/Ev3ilMor3ty/kernel-workpulse) contains the Linux kernel C module, Rust telemetry reader and networkless QEMU tests.
 
-## Two standalone systems tools
+## Standalone systems tools
 
 The new [Foundry Labs](labs/) projects work independently of the dashboard:
 
+- **[ForgeC](labs/forgec/)**: an original C-like language and Rust compiler that
+  emits native x86-64 Linux ELF or Windows PE executables, with no external
+  assembler or linker at compile time.
 - **[RV32](labs/rv32/)**: a Rust RISC-V integer interpreter with a Python assembler,
   instruction traces, bounded execution and independent arithmetic/QEMU checks.
 - **[ShardVault](labs/shardvault/)**: C++ Reed-Solomon file recovery. Rebuild a file

@@ -1,14 +1,15 @@
 # Foundry Labs
 
-Two standalone command-line projects. They do not need Java, the dashboard or the
+Standalone command-line projects. They do not need Java, the dashboard or the
 original dispatch services.
 
 | Tool | Useful for | Implementation |
 | --- | --- | --- |
+| [ForgeC](forgec/) | Compile your own C-like programs directly to native Linux or Windows executables | Original Rust frontend, constant folder, x86-64 backend and ELF/PE writers |
 | [RV32](rv32/) | Learn how machine instructions execute; assemble small programs, inspect register changes and reproduce traps | Dependency-free Rust RV32I interpreter, Python assembler and independent checks |
 | [ShardVault](shardvault/) | Split a file into redundant fragments and reconstruct it after fragments are lost or accidentally damaged | C++20 systematic Reed-Solomon coding with an independently checked binary format |
 
-Both are MIT. Source, examples, tests and English Linux/Windows instructions live
+All are MIT. Source, examples, tests and English Linux/Windows instructions live
 in each directory. These are bounded prototypes with documented limits, rather
 than an operating system emulator or a production backup product.
 
