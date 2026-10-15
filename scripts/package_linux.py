@@ -4,7 +4,16 @@
 Requires a clean Git checkout, built components and `cargo metadata` JSON for the
 locked ledger dependencies filtered for x86_64-unknown-linux-gnu. The package needs Java 21, not a Rust/C++ toolchain.
 """
-import argparse, hashlib, json, os, pathlib, platform, shutil, subprocess
+import argparse
+import hashlib
+import io
+import json
+import os
+import pathlib
+import platform
+import shutil
+import subprocess
+import tarfile
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 
