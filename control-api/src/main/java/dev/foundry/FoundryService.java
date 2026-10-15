@@ -2,6 +2,7 @@ package dev.foundry;
 
 import com.google.gson.*;
 import java.io.IOException;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 
 /** Serializes transitions; an acknowledged mutation is already durable. */
@@ -12,6 +13,7 @@ final class FoundryService {
     }
   }
 
+  private final ReentrantLock stateLock = new ReentrantLock();
   private final Ports.Journal journal;
   private final Ports.Matcher matcher;
   private final Consumer<JsonObject> publish;
@@ -47,7 +49,16 @@ final class FoundryService {
     records = last.get("seq").getAsLong();
   }
 
-  synchronized JsonObject snapshot() {
+  JsonObject snapshot() {
+    stateLock.lock();
+    try {
+      return snapshotLocked();
+    } finally {
+      stateLock.unlock();
+    }
+  }
+
+  private JsonObject snapshotLocked() {
     var result = state.deepCopy();
     result.add(
         "audit",
@@ -70,7 +81,16 @@ final class FoundryService {
     return result;
   }
 
-  synchronized JsonObject command(String operation, JsonObject request) throws IOException {
+  JsonObject command(String operation, JsonObject request) throws IOException {
+    stateLock.lock();
+    try {
+      return commandLocked(operation, request);
+    } finally {
+      stateLock.unlock();
+    }
+  }
+
+  private JsonObject commandLocked(String operation, JsonObject request) throws IOException {
     if (degraded || !journal.healthy())
       throw new IOException("Ledger unavailable; restart and verify before making changes");
     var allowed = new java.util.HashSet<>(java.util.Set.of("commandId", "expectedRevision"));

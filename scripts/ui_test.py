@@ -35,7 +35,7 @@ def main():
                 "console",
                 lambda m: console.append(m.text) if m.type == "error" else None,
             )
-            page.goto(server.base, wait_until="networkidle")
+            page.goto(server.base, wait_until="domcontentloaded")
             page.wait_for_function(
                 "() => document.querySelector('#queued-count').textContent==='12'"
             )

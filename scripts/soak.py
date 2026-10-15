@@ -145,7 +145,12 @@ def main():
                     replay_status == 200
                     and replayed["replayed"]
                     and replayed["state"]["revision"] == current["revision"]
-                )
+                ), {
+                    "phase": "idempotent-retry",
+                    "status": replay_status,
+                    "response": replayed,
+                    "expected_revision": current["revision"],
+                }
                 checkpoint["operations"] += 1
                 if i % 40 == 0:
                     code, _ = server.post(

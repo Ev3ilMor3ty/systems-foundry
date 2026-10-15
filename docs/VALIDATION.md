@@ -11,7 +11,7 @@ The repository records finite checks rather than claims of production readiness.
 | C++ safety/protocol | Address/undefined-behavior sanitizer run; rematching, 64-bit totals, bounds, malformed requests, nesting limits and pretty-printed CLI input |
 | Rust ledger | Four integration-style Rust tests covering reopen/idempotency, locks, corruption, reordering, truncation, limits and multi-record replay |
 | Real filesystem faults | Writer SIGKILL after acknowledgements, cross-process locks, actual partial write/EFBIG, retained corrupt tail, incomplete protocol input and oversized file rejection |
-| Java | 16 JUnit tests across state/concurrency/storage behavior, real HTTP, native peer faults and proof verification |
+| Java | 17 JUnit tests across state/concurrency/storage behavior, real HTTP, native peer faults and proof verification |
 | Live integration | Actual Java → C++/Rust flow; all initial requests delivered; restart with exact state/head; eight crash timings with exactly-once retries; killed dependencies cannot commit partial changes |
 | Browser | Real API, proof download independently verified, text safely rendered, filters and controls, visible failure/recovery, widths 320/390/768/1024/1440 with no document overflow |
 | Automated accessibility | Zero axe WCAG 2 A/AA and 2.1 AA violations in the tested desktop state; this is not full conformance certification |
@@ -24,7 +24,7 @@ See [integration evidence](evidence/integration.json), [browser evidence](eviden
 
 A separately frozen application run was launched for 4.5 hours at a modest five-second command cadence, with idempotent retries, independent proof checks, validation failures, SSE reconnects, periodic restarts, crash injection, memory sampling and final anchored ledger verification. The kernel repository has a separate four-hour VM lifecycle soak.
 
-**Launched is not completed.** A final run must have `complete: true` and a completed phase. Interrupted, failed or still-running jobs are not presented as passes. Results apply to their recorded binaries and options, not automatically to a later configuration.
+**The application run did not complete:** its retry assertion failed after 2,100 completed operations, 585 checked proofs and 12 restarts (four involving crash injection), at about 2 hours 55 minutes. Its preserved ledger and [incomplete checkpoint summary](evidence/endurance-incomplete.json) are under investigation. It is not a passed 4.5-hour run. The separate kernel soak completed four hours successfully. A changed application configuration does not inherit either result.
 
 The first application smoke exposed a driver that repeatedly asked for a plan when the idle carrier lacked the queued capability. The corrected driver advances time in that case, and dashboard Auto run uses the same eligibility condition. The earlier smoke is preserved separately and is not evidence that the corrected full workflow was exercised.
 
@@ -35,6 +35,14 @@ The first application smoke exposed a driver that repeatedly asked for a plan wh
 - Power-loss guarantees beyond the filesystem/storage's sync contract.
 - Unbounded throughput, unlimited history or zero defects.
 - Complete accessibility, platform or browser compatibility from one automated suite.
-- Native Windows support until the Windows CI build and portable checks actually pass.
+- Windows scenarios beyond the native CI build and portable checks that passed in [run 38737102319](https://github.com/Ev3ilMor3ty/systems-foundry/actions/runs/38737102319).
 
 See [benchmark methodology](BENCHMARKS.md) for the distinction between algorithm timing and end-to-end process latency. Local compilation and VM testing used a two-core quota on a shared Linux development host.
+
+## Carrier-starvation fix
+
+The old build deterministically returned HTTP 503 after about three seconds when the Java 21 virtual-thread scheduler was restricted to one carrier. It waited for another virtual IPC task while holding intrinsic monitors. The corrected build uses ReentrantLock guards and dedicated platform threads for blocking pipe I/O. The single-carrier regression now completes a real command, five eight-way competing-write batches, 80 concurrent snapshots, an exact dispatch and final anchored verification.
+
+See [before/after evidence](evidence/carrier-starvation-comparison.json). This reproduces and fixes a starvation path consistent with the overnight timeout timing. The old soak did not retain the failed response or Java cause, so the exact original cause is not proven. The failed run remains incomplete. New failures now record the retry response and native exception type instead of discarding that context.
+
+The initial Linux browser CI failure came from waiting for network idle on a page with a live event stream. The harness now waits for DOM content and the actual application-ready state; it does not weaken the page's content security policy.

@@ -1,5 +1,7 @@
 # Systems Foundry
 
+[![Build and verify](https://github.com/Ev3ilMor3ty/systems-foundry/actions/workflows/checks.yml/badge.svg)](https://github.com/Ev3ilMor3ty/systems-foundry/actions/workflows/checks.yml)
+
 **A small operations system with an optimizer you can verify and a ledger you can inspect.**
 
 Java coordinates a fictional logistics district. C++ makes the dispatch decision. Rust commits the event before the browser sees it. A dependency-free HTML/CSS/JavaScript interface puts the whole workflow on one screen.

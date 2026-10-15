@@ -25,11 +25,13 @@ public final class Main {
         Path.of(
             options.getOrDefault(
                 "--chronicle",
-                root.resolve("chronicle/target/release/foundry-chronicle" + executableSuffix).toString()));
+                root.resolve("chronicle/target/release/foundry-chronicle" + executableSuffix)
+                    .toString()));
     Path dispatch =
         Path.of(
             options.getOrDefault(
-                "--dispatch", root.resolve("dispatch/build/foundry-dispatch" + executableSuffix).toString()));
+                "--dispatch",
+                root.resolve("dispatch/build/foundry-dispatch" + executableSuffix).toString()));
     int port = Integer.parseInt(options.getOrDefault("--port", "8090"));
     if (port < 0 || port > 65535) throw new IllegalArgumentException("Invalid port");
     System.setProperty("sun.net.httpserver.maxReqTime", "15");

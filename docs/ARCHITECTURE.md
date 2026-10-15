@@ -14,7 +14,7 @@ flowchart LR
 
 ## A serialized state machine
 
-The Java service holds one mutation lock. Each command includes a unique `commandId` and the `expectedRevision` visible to the caller. A stale revision produces HTTP 409. Concurrent commands against one revision have exactly one winner.
+The Java service holds one reentrant mutation lock. Each command includes a unique `commandId` and the `expectedRevision` visible to the caller. A stale revision produces HTTP 409. Concurrent commands against one revision have exactly one winner.
 
 Before computing a new transition, the service asks Chronicle whether that command ID already exists. The same operation and full request replay the committed revision; a different request with the same ID conflicts. The replay response contains the current snapshot as well as the original committed revision, so a retry does not roll the browser back.
 
@@ -78,6 +78,6 @@ Each live client has a bounded queue of complete snapshots. A slow client may sk
 
 ## Native process lifecycle
 
-Java starts explicit argument arrays without a shell. Workers receive bounded lines and have deadlines. A timed-out, malformed or prematurely closed native peer is killed and is never reused. The ledger path and binary paths are local configuration, not user-supplied HTTP command strings.
+Java starts explicit argument arrays without a shell. Blocking pipe I/O runs on two dedicated platform threads; reentrant locks avoid pinning Java 21 virtual-thread carriers while requests wait for worker replies. Workers receive bounded lines and have deadlines. A timed-out, malformed or prematurely closed native peer is killed and is never reused. The ledger path and binary paths are local configuration, not user-supplied HTTP command strings.
 
 Linux test harnesses freeze binary copies, use exact child identity checks and pidfds for injected signals, and adopt/reap their own orphaned descendants after intentional crashes. They do not kill arbitrary process names. Kernel tests run separately in QEMU and never load modules into the host.

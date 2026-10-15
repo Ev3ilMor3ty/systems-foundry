@@ -8,4 +8,5 @@ node --test "$FOUNDRY_ROOT/control-room/ui-model.test.mjs"
 if [[ "${1:-}" == '--integration' ]]; then
   python3 "$FOUNDRY_ROOT/chronicle/tests/process_failures.py"
   python3 "$FOUNDRY_ROOT/scripts/integration_test.py"
+  python3 "$FOUNDRY_ROOT/scripts/scheduler_test.py"
 fi

@@ -37,7 +37,8 @@ class NativeWorkerTest {
     for (String script :
         new String[] {
           "import sys\nsys.stdin.readline()\nprint('not-json',flush=True)\n",
-          "raise SystemExit(0)\n", "import sys\nsys.stdin.readline()\nsys.stdout.write('{\"ok\":true}');sys.stdout.flush()\n"
+          "raise SystemExit(0)\n",
+          "import sys\nsys.stdin.readline()\nsys.stdout.write('{\"ok\":true}');sys.stdout.flush()\n"
         })
       try (var worker = peer(script)) {
         assertThrows(
