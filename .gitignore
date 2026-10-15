@@ -1,0 +1,13 @@
+**/target/
+**/build/
+**/node_modules/
+.run/
+*.log
+*.class
+*.o
+*.d
+.env
+.DS_Store
+
+**/__pycache__/
+*.pyc

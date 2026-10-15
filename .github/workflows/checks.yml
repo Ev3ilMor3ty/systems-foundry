@@ -1,0 +1,70 @@
+name: Build and verify
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  linux:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: control-room/package-lock.json
+      - run: rustup toolchain install 1.85.1 --profile minimal --component rustfmt
+      - run: rustup default 1.85.1
+      - run: ./scripts/build.sh
+      - run: ./scripts/check.sh --integration
+      - run: make -C dispatch sanitize
+      - run: cargo fmt --manifest-path chronicle/Cargo.toml --check
+      - run: npm ci --ignore-scripts && npm run format:check
+        working-directory: control-room
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install playwright==1.55.0
+      - run: python -m playwright install --with-deps chromium
+      - name: Browser workflow and WCAG checks
+        run: |
+          CHROMIUM=$(python -c 'from playwright.sync_api import sync_playwright; p=sync_playwright().start(); print(p.chromium.executable_path); p.stop()')
+          python scripts/ui_test.py --chromium "$CHROMIUM"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: linux-test-evidence
+          path: |
+            control-api/target/surefire-reports/
+            docs/evidence/
+          retention-days: 14
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: .\scripts\build.ps1
+        shell: pwsh
+      - run: cargo test --manifest-path chronicle/Cargo.toml --locked
+      - run: node --test control-room/ui-model.test.mjs
+      - name: Native optimizer smoke
+        shell: pwsh
+        run: |
+          Get-Content dispatch/examples/rematching.json -Raw | dispatch/build/foundry-dispatch.exe
+          if ($LASTEXITCODE -ne 0) { throw 'Optimizer failed' }
