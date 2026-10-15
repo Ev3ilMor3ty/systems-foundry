@@ -11,17 +11,16 @@ import tempfile
 import textwrap
 import time
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFilter, ImageFont, ImageOps
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[2]
-BACKGROUND = "#080e17"
-PANEL = "#101b29"
-LINE = "#213347"
-WHITE = "#edf4fa"
-MUTED = "#93a9bf"
-CYAN = "#68ecd0"
-BLUE = "#7daeff"
+BACKDROP = HERE / "background-charcoal-amber.png"
+LINE = "#3a332c"
+WHITE = "#faf4ec"
+MUTED = "#b6ada2"
+ACCENT = "#ffc28c"
+HIGHLIGHT = "#e8cdb0"
 FPS = 24
 DURATION = 22
 FONT_ROOT = Path("/usr/share/fonts/truetype/dejavu")
@@ -140,14 +139,37 @@ def wrap(draw, value, width, size, style="normal"):
     return result
 
 
+@lru_cache(maxsize=4)
+def background_plate(w, h):
+    with Image.open(BACKDROP) as image:
+        return ImageOps.fit(
+            image.convert("RGB"),
+            (w, h),
+            method=Image.Resampling.LANCZOS,
+            centering=(0.85 if h > w else 0.5, 0.5),
+        )
+
+
 def base(w, h):
-    image = Image.new("RGB", (w, h), BACKGROUND)
-    d = ImageDraw.Draw(image)
-    for x in range(0, w, 40):
-        d.line((x, 0, x, h), fill="#0d1622")
-    for y in range(0, h, 40):
-        d.line((0, y, w, y), fill="#0d1622")
-    return image
+    return background_plate(w, h).copy()
+
+
+@lru_cache(maxsize=4)
+def terminal_overlay(w, h, x1, top, x2, bottom):
+    shadow = Image.new("RGBA", (w, h))
+    ImageDraw.Draw(shadow).rounded_rectangle(
+        (x1 + 3, top + 12, x2 + 3, bottom + 12), radius=18, fill=(0, 0, 0, 180)
+    )
+    shadow = shadow.filter(ImageFilter.GaussianBlur(16))
+    card = Image.new("RGBA", (w, h))
+    ImageDraw.Draw(card).rounded_rectangle(
+        (x1, top, x2, bottom),
+        radius=18,
+        fill=(15, 15, 17, 232),
+        outline=(93, 79, 66, 170),
+        width=1,
+    )
+    return Image.alpha_composite(shadow, card)
 
 
 def render(t, w, h, evidence):
@@ -155,7 +177,7 @@ def render(t, w, h, evidence):
     image = base(w, h)
     d = ImageDraw.Draw(image)
     margin = 42 if portrait else 64
-    text(d, (margin, 34), "FORGEC", 24, CYAN, "bold")
+    text(d, (margin, 34), "FORGEC", 24, ACCENT, "bold")
     text(d, (w - margin - 159, 40), "NATIVE x86-64", 16, MUTED, "mono")
     d.line((margin, 84, w - margin, 84), fill=LINE, width=1)
     # This footer distinguishes rendered playback from a live screen recording.
@@ -165,7 +187,7 @@ def render(t, w, h, evidence):
     d.rounded_rectangle(
         (margin, h - 16, margin + (w - 2 * margin) * min(t / DURATION, 1), h - 12),
         radius=2,
-        fill=CYAN,
+        fill=ACCENT,
     )
     rows = evidence["commands"][2]["stdout"].splitlines()
     if t < 3 or t >= 18:
@@ -221,9 +243,9 @@ def render(t, w, h, evidence):
         fw = d.textlength("#" * 80, font=font(fs, "mono"))
         fx = (w - fw) / 2 if portrait else w - margin - fw
         for n, row in enumerate(rows):
-            text(d, (fx, fy + n * dy), row, fs, CYAN, "mono")
+            text(d, (fx, fy + n * dy), row, fs, ACCENT, "mono")
         if portrait:
-            text(d, (margin, 970), "Linux ELF  /  Windows PE", 23, BLUE, "mono")
+            text(d, (margin, 970), "Linux ELF  /  Windows PE", 23, HIGHLIGHT, "mono")
             text(
                 d,
                 (margin, 1040),
@@ -233,7 +255,7 @@ def render(t, w, h, evidence):
                 "mono",
             )
         else:
-            text(d, (margin, 478), "Linux ELF  /  Windows PE", 22, BLUE, "mono")
+            text(d, (margin, 478), "Linux ELF  /  Windows PE", 22, HIGHLIGHT, "mono")
             text(
                 d,
                 (margin, 552),
@@ -248,10 +270,9 @@ def render(t, w, h, evidence):
     top = 285 if portrait else 230
     bottom = h - (170 if portrait else 86)
     x1, x2 = margin, w - margin
-    d.rounded_rectangle(
-        (x1, top, x2, bottom), radius=18, fill=PANEL, outline=LINE, width=2
-    )
-    for n, color in enumerate(["#fc847f", "#f3cf74", "#68d5b7"]):
+    overlay = terminal_overlay(w, h, x1, top, x2, bottom)
+    image.paste(overlay, (0, 0), overlay)
+    for n, color in enumerate(["#746b63", "#a69889", "#d6b797"]):
         d.ellipse((x1 + 22 + n * 23, top + 19, x1 + 32 + n * 23, top + 29), fill=color)
     d.line((x1, top + 49, x2, top + 49), fill=LINE)
     title_size = 39 if portrait else 46
@@ -264,7 +285,7 @@ def render(t, w, h, evidence):
         lines = wrap(d, excerpt, x2 - x1 - 58, size, "mono")
         line_height = 27 if portrait else 23
         for n, line in enumerate(lines):
-            color = CYAN if "while" in line or "if" in line else WHITE
+            color = ACCENT if "while" in line or "if" in line else WHITE
             text(d, (x1 + 27, top + 66 + n * line_height), line, size, color, "mono")
     elif t < 11.5:
         text(d, (margin, 128), "Compile it.", title_size, WHITE, "bold")
@@ -277,7 +298,7 @@ def render(t, w, h, evidence):
         for line in wrap(
             d, shown + ("▌" if t < 8.5 else ""), x2 - x1 - 54, size, "mono"
         ):
-            text(d, (x1 + 27, yy), line, size, CYAN, "mono")
+            text(d, (x1 + 27, yy), line, size, ACCENT, "mono")
             yy += 34
         if t >= 8.7:
             result = json.loads(evidence["commands"][1]["stdout"])
@@ -294,7 +315,7 @@ def render(t, w, h, evidence):
                     (x1 + 27, yy + 34 + n * 35),
                     line,
                     20 if portrait else 23,
-                    BLUE if n == 0 else WHITE,
+                    HIGHLIGHT if n == 0 else WHITE,
                     "mono",
                 )
             if portrait:
@@ -311,7 +332,7 @@ def render(t, w, h, evidence):
                     (x1 + 27, bottom - 142),
                     "Linux ELF64\nWindows PE32+",
                     25,
-                    BLUE,
+                    HIGHLIGHT,
                     "mono",
                 )
     else:
@@ -325,7 +346,7 @@ def render(t, w, h, evidence):
         fy = top + (150 if portrait else 61)
         visible = min(24, max(0, int((t - 11.8) * 15)))
         for n, row in enumerate(rows[:visible]):
-            text(d, (fx, fy + n * line_height), row, size, CYAN, "mono")
+            text(d, (fx, fy + n * line_height), row, size, ACCENT, "mono")
         if portrait:
             text(
                 d,
@@ -385,11 +406,22 @@ def video(output, w, h, evidence):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--compiler", required=True, type=Path)
+    inputs = parser.add_mutually_exclusive_group(required=True)
+    inputs.add_argument("--compiler", type=Path)
+    inputs.add_argument(
+        "--recording", type=Path, help="reuse the original verified command recording"
+    )
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
-    evidence = record(args.compiler.resolve())
+    evidence = (
+        json.loads(args.recording.read_text())
+        if args.recording
+        else record(args.compiler.resolve())
+    )
+    rows = evidence["commands"][2]["stdout"].splitlines()
+    if len(rows) != 24 or any(len(row) != 80 for row in rows):
+        raise RuntimeError("recording has unexpected fractal dimensions")
     (args.output / "recording.json").write_text(json.dumps(evidence, indent=2) + "\n")
     for name, w, h in [
         ("forgec-demo.mp4", 1280, 720),

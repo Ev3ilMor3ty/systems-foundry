@@ -2,6 +2,10 @@
 
 Short videos showing actual ForgeC compilation and the native program's output.
 
+Version 2 uses a charcoal-and-amber background plate, warm typography and a
+neutral terminal panel. The grid is removed. The backdrop was generated for
+this presentation; source code, command captures and program output are unchanged.
+
 | File | Use |
 | --- | --- |
 | [forgec-demo.mp4](forgec-demo.mp4) | Landscape video, 1280×720, 22 seconds |
@@ -11,6 +15,7 @@ Short videos showing actual ForgeC compilation and the native program's output.
 | [POST.md](POST.md) | Ready-to-edit title and captions |
 | [forgec-captions.srt](forgec-captions.srt) | Optional subtitle file |
 | [recording.json](recording.json) | Actual source, commands, captured output and binary identities |
+| [background-charcoal-amber.png](background-charcoal-amber.png) | New presentation background |
 
 The videos are rendered terminal replays, not live screen recordings. The
 commands were executed locally using the compiler covered by the committed
@@ -33,6 +38,14 @@ itself still has no third-party Rust crate dependencies.
 python3 labs/forgec/showcase/make_showcase.py \
   --compiler labs/forgec/target/release/forgec \
   --output /tmp/forgec-presentation
+```
+
+To update visuals while preserving the original recorded evidence exactly:
+
+```bash
+python3 labs/forgec/showcase/make_showcase.py \
+  --recording labs/forgec/showcase/recording.json \
+  --output /tmp/forgec-presentation-v2
 ```
 
 The renderer checks the compiler hash against committed native evidence, runs
