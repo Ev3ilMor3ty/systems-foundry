@@ -1,0 +1,56 @@
+name: Verify Foundry Labs
+on:
+  push:
+    branches: [main]
+    paths: ['labs/**', '.github/workflows/labs.yml']
+  pull_request:
+    paths: ['labs/**', '.github/workflows/labs.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  tools:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            vault: labs/shardvault/build/shardvault
+            rv32: labs/rv32/target/release/rv32
+          - os: windows-latest
+            vault: labs/shardvault/build/Release/shardvault.exe
+            rv32: labs/rv32/target/release/rv32.exe
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: rustup toolchain install 1.85.1 --profile minimal --component rustfmt
+      - run: rustup default 1.85.1
+      - run: cargo fmt --manifest-path labs/rv32/Cargo.toml --check
+      - run: cargo test --manifest-path labs/rv32/Cargo.toml --locked
+      - run: cargo build --release --manifest-path labs/rv32/Cargo.toml --locked
+      - run: cmake -S labs/shardvault -B labs/shardvault/build -DCMAKE_BUILD_TYPE=Release
+      - run: cmake --build labs/shardvault/build --config Release --parallel 2
+      - run: python -c "from pathlib import Path; Path('labs/build/evidence').mkdir(parents=True,exist_ok=True)"
+      - run: python labs/rv32/tests/check_cli.py ${{ matrix.rv32 }} --output labs/build/evidence/rv32.json
+      - run: python labs/shardvault/tests/check.py ${{ matrix.vault }} --output labs/build/evidence/shardvault.json
+      - name: Install independent RISC-V reference
+        if: runner.os == 'Linux'
+        run: sudo apt-get update -qq && sudo apt-get install -y --no-install-recommends qemu-user
+      - name: Compare generated programs with real QEMU
+        if: runner.os == 'Linux'
+        run: python labs/rv32/tests/check_cli.py ${{ matrix.rv32 }} --qemu /usr/bin/qemu-riscv32 --output labs/build/evidence/rv32-qemu.json
+      - name: Check file coding under address and undefined-behavior sanitizers
+        if: runner.os == 'Linux'
+        run: |
+          g++ -std=c++20 -g -O1 -Wall -Wextra -Wpedantic -Werror -fsanitize=address,undefined -fno-omit-frame-pointer -fno-pie -no-pie labs/shardvault/src/main.cpp -o labs/shardvault/build/shardvault-sanitized
+          python labs/shardvault/tests/check.py labs/shardvault/build/shardvault-sanitized --output labs/build/evidence/shardvault-sanitized.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: labs-evidence-${{ runner.os }}
+          path: labs/build/evidence/*.json
+          retention-days: 14

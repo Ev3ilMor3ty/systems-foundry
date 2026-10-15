@@ -1,0 +1,10 @@
+{
+  "ok": true,
+  "binary_sha256": "255ceab3eadd9ab09db485d81b230395ee366b0873c9953df38ec207b769606a",
+  "modeled_programs": 120,
+  "random_alu_operations": 28800,
+  "trace_steps_replayed": 757,
+  "qemu_exit_status_checks": 120,
+  "rejected_invalid_operations": 17,
+  "seconds": 0.656
+}

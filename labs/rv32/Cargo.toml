@@ -1,0 +1,16 @@
+[package]
+name = "foundry-rv32"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "A small RV32I interpreter with bounded memory and instruction traces"
+
+[lib]
+name = "rv32"
+
+[[bin]]
+name = "rv32"
+path = "src/main.rs"
+
+[profile.release]
+overflow-checks = true

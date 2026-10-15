@@ -19,13 +19,27 @@ Java coordinates a fictional logistics district. C++ makes the dispatch decision
 
 The separate [WorkPulse repository](https://github.com/Ev3ilMor3ty/kernel-workpulse) contains the Linux kernel C module, Rust telemetry reader and networkless QEMU tests.
 
+## Two standalone systems tools
+
+The new [Foundry Labs](labs/) projects work independently of the dashboard:
+
+- **[RV32](labs/rv32/)**: a Rust RISC-V integer interpreter with a Python assembler,
+  instruction traces, bounded execution and independent arithmetic/QEMU checks.
+- **[ShardVault](labs/shardvault/)**: C++ Reed-Solomon file recovery. Rebuild a file
+  from any k of its k+m fragments, including recovery from parity fragments alone.
+
+Each includes examples, an English Linux/Windows guide and finite validation evidence.
+
 ## Downloads
 
 - [Linux x86-64 portable preview ZIP](https://github.com/Ev3ilMor3ty/systems-foundry/archive/refs/tags/v0.1.0-linux-r2.zip): extract everything and run `bash start.sh`; requires Java 21 and the documented Linux runtime.
 - [Complete source ZIP](https://github.com/Ev3ilMor3ty/systems-foundry/archive/refs/tags/v0.1.0.zip): Linux and native Windows build routes are in [the English installation guide](docs/INSTALL.md).
 - [Portable packaging details and checksums](docs/PACKAGING.md).
 
-The application is a preview. The corrected long endurance run is still in progress and is not presented as a pass.
+The application is a preview. The corrected Java/native configuration completed
+its separate 4.5-hour test with 3,239 operations and six crash retries. Its frozen
+C++ parser differs from the later portable package; see the identity-scoped
+[validation results](docs/VALIDATION.md).
 
 ## Run it
 
