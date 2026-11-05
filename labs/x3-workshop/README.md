@@ -38,6 +38,24 @@ The documented restriction concerns a particular SHU Bluetooth path for G3 VCU 1
 
 A separate ChatGPT firmware-notification task was created in the setup conversation. **This website is not connected to it, does not update automatically and does not enable visitor notifications.** No firmware binaries are distributed.
 
+
+## X3 Studio statistics update
+
+The compact, numbered model/component/configuration layout is inspired by the public x3fw builder structure. The interface, CSS and source remain independently written; no Kasai assets or firmware are copied.
+
+Statistics are **manual entries or calculations, never live scooter readings**:
+
+- Motor rated/nameplate peak watts and mechanical RPM.
+- Battery voltage, DC amps, separate phase amps, SOC and temperatures.
+- Nameplate Wh versus calculated nominal Wh (nominal volts × Ah).
+- Signed battery input watts (measured-point volts × DC amps), not mechanical motor output.
+- Up to 128 explicitly manual time-stamped points, a power plot, discharge amp/watt peaks, phase magnitude peak and charging/regen watt peak.
+- Watt peaks use the product at each individual point, not max(voltage) × max(current). SOC and mechanical motor power are not inferred.
+- Stats and history are stored separately per model and round-trip through the existing JSON profile. Legacy profiles migrate to unknown stats and an empty history.
+- The sample cap rejects additional entries rather than silently discarding old peaks. Export before explicitly resetting a series.
+
+Added pure-logic coverage: **18 groups / 195 assertions passed** in the available JavaScript isolate, including the existing profile tests. Remote Node and desktop/mobile Chromium results must be checked in the corresponding Actions run. No real iPhone, scooter or dynamometer result is implied.
+
 ## Tests
 
 Node 22, no dependencies:

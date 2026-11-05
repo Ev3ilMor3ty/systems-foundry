@@ -3,6 +3,7 @@ on:
   push:
     paths:
       - ".github/workflows/x3-public-preview.yml"
+      - "labs/x3-workshop/index.html"
   workflow_dispatch:
 permissions:
   contents: read
@@ -17,7 +18,7 @@ jobs:
           node-version: "22"
       - name: Verify immutable public HTML response
         env:
-          X3_SOURCE_COMMIT: "4533ca71e50a33130d0ae9dcd28797587d5e7502"
+          X3_SOURCE_COMMIT: "${{ github.sha }}"
         run: |
           node <<'NODE'
           const fs = require("node:fs");

@@ -113,6 +113,90 @@ function runCoreTests(core) {
     delete draft.firmware;
     throws(() => core.validate(draft), "missing component section");
   });
+
+  group("legacy profiles migrate with no fabricated telemetry", () => {
+    const old = core.blank("max-g3-d");
+    delete old.stats; delete old.samples;
+    const migrated = core.parse(JSON.stringify(old));
+    same(migrated.samples, [], "legacy history is empty");
+    ok(Object.values(migrated.stats).every((value) => value === null), "legacy stats unknown");
+    ok(!core.summarize(migrated).isLive, "no live claim");
+  });
+  group("DC power does not use phase current or motor nameplate", () => {
+    const p = core.blank("max-g3-d");
+    p.stats.voltageV = 50; p.stats.batteryCurrentA = 10; p.stats.phaseCurrentA = 200;
+    p.stats.motorDeclaredPeakW = 9999;
+    const summary = core.summarize(core.appendSample(p, "2026-11-05T19:00:00.000Z"));
+    same(summary.inputPowerW, 500, "battery U times DC I");
+    same(summary.peakInputW, 500, "electrical peak independent of nameplate");
+    same(summary.peakPhaseA, 200, "phase reported separately");
+    same(summary.motorOutputW, null, "no inferred mechanical watts");
+  });
+  group("peak watts use simultaneous samples not independent maxima", () => {
+    let p = core.blank("max-g3-d");
+    p.stats.voltageV = 60; p.stats.batteryCurrentA = 10;
+    p = core.appendSample(p, "2026-11-05T19:00:00.000Z");
+    p.stats.voltageV = 40; p.stats.batteryCurrentA = 20;
+    p = core.appendSample(p, "2026-11-05T19:00:01.000Z");
+    const summary = core.summarize(p);
+    same(summary.peakInputW, 800, "not 60 times 20");
+    same(summary.peakBatteryA, 20, "DC peak");
+    same(summary.sampleCount, 2, "two logged samples");
+    same(summary.powerSeries.map((point) => point.powerW), [600, 800], "series is unmodified");
+  });
+  group("signed charging and regen stay separate from discharge", () => {
+    let p = core.blank("f3-pro-d");
+    p.stats.voltageV = 50; p.stats.batteryCurrentA = -5; p.stats.phaseCurrentA = -80;
+    p = core.appendSample(p, "2026-11-05T19:00:00.000Z");
+    const summary = core.summarize(p);
+    same(summary.inputPowerW, -250, "signed power");
+    same(summary.peakChargeW, 250, "charge magnitude");
+    same(summary.peakInputW, null, "no recorded discharge peak");
+    same(summary.peakBatteryA, null, "no recorded discharge amps");
+    same(summary.peakPhaseA, 80, "absolute recorded phase peak");
+  });
+  group("unknown zero and nameplate energy remain distinct", () => {
+    const p = core.blank("e3-pro-d");
+    same(core.summarize(p).inputPowerW, null, "unknown power");
+    p.stats.voltageV = 50;
+    same(core.summarize(p).inputPowerW, null, "voltage alone is insufficient");
+    p.stats.batteryCurrentA = 0;
+    same(core.summarize(p).inputPowerW, 0, "zero current is valid");
+    p.stats.batteryNominalV = 46.8; p.stats.batteryCapacityAh = 12.75;
+    p.stats.batteryDeclaredWh = 597;
+    ok(Math.abs(core.summarize(p).nominalEnergyWh - 596.7) < 0.00001, "nominal U times Ah");
+    same(p.stats.batteryDeclaredWh, 597, "rounded nameplate preserved separately");
+    same(p.stats.socPct, null, "SOC not guessed from voltage");
+    same(core.summarize(p).peakInputW, null, "unlogged snapshot not a historical peak");
+  });
+  group("stats bounds and sample provenance validated", () => {
+    for (const field of core.statsFields) {
+      for (const invalid of [Infinity, NaN, "10", field.min - 1, field.max + 1]) {
+        const p = core.blank("zt3-pro-d");
+        p.stats[field.id] = invalid;
+        throws(() => core.validate(p), "reject " + field.id);
+      }
+    }
+    const p = core.blank("max-g3-d");
+    throws(() => core.appendSample(p, "2026-11-05T19:00:00.000Z"), "missing simultaneous data");
+    p.stats.voltageV = 50; p.stats.batteryCurrentA = 1;
+    throws(() => core.appendSample(p, "not-a-date"), "invalid timestamp");
+    throws(() => core.appendSample(p, "2026-02-29T19:00:00.000Z"), "invalid calendar date");
+    const logged = core.appendSample(p, "2026-11-05T19:00:00.000Z");
+    logged.samples[0].source = "live";
+    throws(() => core.validate(logged), "reject fabricated live source");
+  });
+  group("sample cap does not silently discard peaks", () => {
+    let p = core.blank("max-g3-d");
+    p.stats.voltageV = 50; p.stats.batteryCurrentA = 1;
+    p.notes = "x".repeat(2000);
+    for (let i = 0; i < 128; i++) p = core.appendSample(p, new Date(1793905200000 + i * 1000).toISOString());
+    same(core.summarize(p).sampleCount, 128, "full history preserved");
+    throws(() => core.appendSample(p, "2026-11-05T19:10:00.000Z"), "do not overwrite old points");
+    ok(JSON.stringify(p).length < 65536, "full export fits import limit");
+    same(core.parse(JSON.stringify(p)).samples.length, 128, "full history round trip");
+  });
+
   return { groups: groups.length, assertions, names: groups };
 }
 

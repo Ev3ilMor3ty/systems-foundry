@@ -18,6 +18,162 @@ var X3Core = (() => {
     vcu: "1.6.4", mcu: "1.6.0", ble: "0.4.5", bms: "4.1.6.8",
     date: "2026-10-13", source: issue,
   });
+
+  const statsFields = Object.freeze([
+  {
+    "id": "motorRatedW",
+    "label": "Motor-Nennleistung",
+    "unit": "W",
+    "min": 0,
+    "max": 100000
+  },
+  {
+    "id": "motorDeclaredPeakW",
+    "label": "Motor-Peak laut Datenblatt",
+    "unit": "W",
+    "min": 0,
+    "max": 100000
+  },
+  {
+    "id": "batteryNominalV",
+    "label": "Akku-Nennspannung",
+    "unit": "V",
+    "min": 0,
+    "max": 200
+  },
+  {
+    "id": "batteryCapacityAh",
+    "label": "Akku-Kapazität",
+    "unit": "Ah",
+    "min": 0,
+    "max": 2000
+  },
+  {
+    "id": "batteryDeclaredWh",
+    "label": "Akku-Energie laut Typenschild",
+    "unit": "Wh",
+    "min": 0,
+    "max": 4000000
+  },
+  {
+    "id": "voltageV",
+    "label": "Akku-Spannung am Messpunkt",
+    "unit": "V",
+    "min": 0,
+    "max": 200
+  },
+  {
+    "id": "batteryCurrentA",
+    "label": "Akku-Gleichstrom (+ Entnahme / − Ladung)",
+    "unit": "A",
+    "min": -1000,
+    "max": 1000
+  },
+  {
+    "id": "phaseCurrentA",
+    "label": "Phasenstrom (separater Wert)",
+    "unit": "A",
+    "min": -1000,
+    "max": 1000
+  },
+  {
+    "id": "motorRpm",
+    "label": "Motordrehzahl (mechanisch)",
+    "unit": "rpm",
+    "min": 0,
+    "max": 100000
+  },
+  {
+    "id": "socPct",
+    "label": "Akku-Ladestand",
+    "unit": "%",
+    "min": 0,
+    "max": 100
+  },
+  {
+    "id": "motorTempC",
+    "label": "Motor-Temperatur",
+    "unit": "°C",
+    "min": -100,
+    "max": 250
+  },
+  {
+    "id": "controllerTempC",
+    "label": "Controller-Temperatur",
+    "unit": "°C",
+    "min": -100,
+    "max": 250
+  },
+  {
+    "id": "batteryTempC",
+    "label": "Akku-Temperatur",
+    "unit": "°C",
+    "min": -100,
+    "max": 250
+  }
+]);
+  const sampleFields = Object.freeze(["voltageV", "batteryCurrentA", "phaseCurrentA", "motorRpm", "socPct", "motorTempC", "controllerTempC", "batteryTempC"]);
+  function blankStats() {
+    return Object.fromEntries(statsFields.map(({ id }) => [id, null]));
+  }
+  function stat(value, definition) {
+    if (value === undefined || value === null || value === "") return null;
+    if (typeof value !== "number" || !Number.isFinite(value) || value < definition.min || value > definition.max)
+      throw new Error(definition.label + ": ungültiger Zahlenwert. Die Formatgrenze ist keine elektrische Freigabe.");
+    return value;
+  }
+  function validateStats(input) {
+    if (input === undefined) return blankStats();
+    object(input, "Statistik");
+    return Object.fromEntries(statsFields.map((definition) => [definition.id, stat(input[definition.id], definition)]));
+  }
+  function validateSamples(input) {
+    if (input === undefined) return [];
+    if (!Array.isArray(input) || input.length > 128) throw new Error("Messreihe: maximal 128 Punkte.");
+    return input.map((entry) => {
+      object(entry, "Messpunkt");
+      const timestamp = text(entry.timestamp, 30, "Zeitstempel");
+      if (!/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d\.\d{3}Z$/.test(timestamp) || !Number.isFinite(Date.parse(timestamp)) || new Date(timestamp).toISOString() !== timestamp)
+        throw new Error("Messpunkt-Zeitstempel ungültig.");
+      if (entry.source !== "manual") throw new Error("Diese Version akzeptiert nur ausdrücklich manuelle Messpunkte.");
+      const result = { timestamp, source: "manual" };
+      sampleFields.forEach((id) => { result[id] = stat(entry[id], statsFields.find((field) => field.id === id)); });
+      if (result.voltageV === null || result.batteryCurrentA === null)
+        throw new Error("Jeder Messpunkt benötigt Akku-Spannung und Akku-Gleichstrom.");
+      return result;
+    });
+  }
+  function multiply(first, second) {
+    return first === null || second === null ? null : first * second;
+  }
+  function summarize(input) {
+    const profile = validate(input);
+    const stats = profile.stats;
+    const powers = profile.samples.map((sample) => sample.voltageV * sample.batteryCurrentA);
+    const positive = powers.filter((value) => value >= 0);
+    const currents = profile.samples.map((sample) => sample.batteryCurrentA).filter((value) => value >= 0);
+    const phases = profile.samples.map((sample) => sample.phaseCurrentA).filter((value) => value !== null).map(Math.abs);
+    const negative = powers.filter((value) => value < 0).map((value) => -value);
+    const max = (values) => values.length ? Math.max(...values) : null;
+    return {
+      inputPowerW: multiply(stats.voltageV, stats.batteryCurrentA),
+      nominalEnergyWh: multiply(stats.batteryNominalV, stats.batteryCapacityAh),
+      peakInputW: max(positive), peakBatteryA: max(currents),
+      peakPhaseA: max(phases), peakChargeW: max(negative),
+      sampleCount: profile.samples.length,
+      powerSeries: profile.samples.map((sample, index) => ({ index, timestamp: sample.timestamp, powerW: powers[index] })),
+      isLive: false, source: "manual", motorOutputW: null,
+    };
+  }
+  function appendSample(input, timestamp) {
+    const profile = validate(input);
+    if (profile.samples.length >= 128) throw new Error("Messreihe voll. Exportiere sie vor dem Zurücksetzen.");
+    const entry = { timestamp, source: "manual" };
+    sampleFields.forEach((id) => { entry[id] = profile.stats[id]; });
+    profile.samples = validateSamples([...profile.samples, entry]);
+    return profile;
+  }
+
   function model(id) {
     const found = models.find((item) => item.id === id);
     if (!found) throw new Error("Unbekanntes Modell. Es wird kein Ersatzmodell verwendet.");
@@ -52,6 +208,7 @@ var X3Core = (() => {
       hardware: { motor: "", controller: "", battery: "" },
       tuning: { fieldWeakeningRequested: false, fwStartKmh: null, fwCurrentA: null,
         ecoKmh: null, driveKmh: null, sportKmh: null, regen: "stock" },
+      stats: blankStats(), samples: [],
       notes: "",
     };
   }
@@ -76,6 +233,8 @@ var X3Core = (() => {
       throw new Error("Rekuperations-Auswahl ungültig.");
     clean.tuning.regen = tuning.regen;
     clean.notes = text(input.notes, 2000, "Notizen");
+    clean.stats = validateStats(input.stats);
+    clean.samples = validateSamples(input.samples);
     return clean;
   }
   function parse(source) {
@@ -98,6 +257,6 @@ var X3Core = (() => {
       source: knownBlockedPath ? issue : null,
     };
   }
-  return Object.freeze({ models, components, model, blank, validate, parse, assess, observedG3 });
+  return Object.freeze({ models, components, model, blank, validate, parse, assess, observedG3, statsFields, sampleFields, summarize, appendSample });
 })();
 if (typeof module !== "undefined" && module.exports) module.exports = X3Core;

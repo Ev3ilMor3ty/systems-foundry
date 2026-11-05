@@ -7,9 +7,12 @@
   let saveTimer;
   let fileGeneration = 0;
   let packageHash = "";
+  let selectedComponent = "all";
   function message(text, bad = false) {
     $("status").textContent = text;
     $("status").classList.toggle("error", bad);
+    $("stats-status").textContent = text;
+    $("stats-status").classList.toggle("error", bad);
   }
   function stored(id) {
     try {
@@ -32,6 +35,8 @@
     });
     result.tuning.regen = $("regen").value;
     result.notes = $("notes").value;
+    core.statsFields.forEach(({ id }) => { const value = $("stat-" + id).value; result.stats[id] = value === "" ? null : Number(value); });
+    result.samples = draft.samples;
     return core.validate(result);
   }
   function persist() {
@@ -50,6 +55,69 @@
     parent.append(child);
     return child;
   }
+
+  function format(value, unit) {
+    return value === null ? "—" : new Intl.NumberFormat("de-DE", { maximumFractionDigits: 2 }).format(value) + (unit ? " " + unit : "");
+  }
+  function renderStats() {
+    const summary = core.summarize(draft);
+    const values = {
+      "motor-rated": [draft.stats.motorRatedW, "W"],
+      "motor-declared-peak": [draft.stats.motorDeclaredPeakW, "W"],
+      "battery-voltage": [draft.stats.voltageV, "V"],
+      "battery-current": [draft.stats.batteryCurrentA, "A"],
+      "phase-current": [draft.stats.phaseCurrentA, "A"],
+      "battery-soc": [draft.stats.socPct, "%"],
+      "battery-energy": [summary.nominalEnergyWh, "Wh"],
+      "nameplate-energy": [draft.stats.batteryDeclaredWh, "Wh"],
+      "input-power": [summary.inputPowerW, "W"],
+      "input-peak": [summary.peakInputW, "W"],
+      "current-peak": [summary.peakBatteryA, "A"],
+      "phase-peak": [summary.peakPhaseA, "A"],
+      "charge-peak": [summary.peakChargeW, "W"],
+      "motor-temperature": [draft.stats.motorTempC, "°C"],
+      "controller-temperature": [draft.stats.controllerTempC, "°C"],
+      "battery-temperature": [draft.stats.batteryTempC, "°C"],
+      "motor-rpm": [draft.stats.motorRpm, "rpm"],
+    };
+    Object.entries(values).forEach(([id, [value, unit]]) => { $("value-" + id).textContent = format(value, unit); });
+    $("sample-count").textContent = summary.sampleCount + " / 128 manuelle Punkte";
+    const chart = $("power-chart");
+    chart.replaceChildren();
+    const namespace = "http://www.w3.org/2000/svg";
+    if (!summary.powerSeries.length) {
+      $("chart-empty").hidden = false;
+      $("power-chart").hidden = true;
+      $("chart-scale").textContent = "Keine Messreihe vorhanden.";
+    } else {
+      $("chart-empty").hidden = true;
+      $("power-chart").hidden = false;
+      const powers = summary.powerSeries.map((point) => point.powerW);
+      const min = Math.min(0, ...powers);
+      const max = Math.max(1, ...powers);
+      const x = (index) => powers.length === 1 ? 360 : 20 + index * 680 / (powers.length - 1);
+      const y = (power) => 148 - (power - min) * 128 / (max - min);
+      const zero = document.createElementNS(namespace, "line");
+      [["x1", "20"], ["x2", "700"], ["y1", String(y(0))], ["y2", String(y(0))], ["stroke", "#55545c"], ["stroke-dasharray", "4 6"]].forEach(([key, value]) => zero.setAttribute(key, value));
+      chart.append(zero);
+      const line = document.createElementNS(namespace, "polyline");
+      line.setAttribute("points", powers.map((power, index) => x(index) + "," + y(power)).join(" "));
+      line.setAttribute("fill", "none");
+      line.setAttribute("stroke", "#f17a8b");
+      line.setAttribute("stroke-width", "3");
+      chart.append(line);
+      powers.forEach((power, index) => {
+        const circle = document.createElementNS(namespace, "circle");
+        circle.setAttribute("cx", String(x(index)));
+        circle.setAttribute("cy", String(y(power)));
+        circle.setAttribute("r", "3");
+        circle.setAttribute("fill", "#f17a8b");
+        chart.append(circle);
+      });
+      $("chart-scale").textContent = format(min, "W") + " bis " + format(max, "W") + " · Reihenfolge der protokollierten Punkte; keine Zeitinterpolation";
+    }
+  }
+
   function render() {
     const selected = core.model(draft.model);
     $("model-name").textContent = selected.name;
@@ -61,6 +129,7 @@
     body.replaceChildren();
     core.components.forEach(({ id, name, detail }) => {
       const row = document.createElement("tr");
+      row.hidden = selectedComponent !== "all" && selectedComponent !== id;
       const label = document.createElement("th");
       label.scope = "row";
       addText(label, "strong", name);
@@ -90,6 +159,7 @@
     $("missing").textContent = assessment.missing.length ? "Noch offen: " + assessment.missing.join(", ") : "Alle Stände eingetragen. Die Hardware- und Flashprüfung bleibt offen.";
     $("fw-draft-state").textContent = draft.tuning.fieldWeakeningRequested ? "Angefragt · nicht angewendet" : "Nicht angefragt";
     $("fw-parameters").disabled = !draft.tuning.fieldWeakeningRequested;
+    renderStats();
   }
   function fill() {
     core.components.forEach(({ id }) => { $("fw-" + id).value = draft.firmware[id]; });
@@ -100,12 +170,15 @@
     });
     $("regen").value = draft.tuning.regen;
     $("notes").value = draft.notes;
+    core.statsFields.forEach(({ id }) => { $("stat-" + id).value = draft.stats[id] === null ? "" : String(draft.stats[id]); });
     render();
   }
   core.models.forEach((item) => {
     const button = document.createElement("button");
     button.type = "button";
     button.dataset.model = item.id;
+    button.dataset.family = item.family;
+    button.setAttribute("aria-label", item.name);
     button.textContent = item.name;
     button.addEventListener("click", () => {
       try {
@@ -201,6 +274,40 @@
       if (generation === fileGeneration) $("hash-comparison").textContent = "Datei konnte nicht geprüft werden.";
     }
   });
+
+  document.querySelectorAll("[data-component]").forEach((button) => {
+    button.addEventListener("click", () => {
+      selectedComponent = button.dataset.component;
+      document.querySelectorAll("[data-component]").forEach((item) => item.setAttribute("aria-pressed", String(item === button)));
+      render();
+    });
+  });
+  $("stats-form").addEventListener("input", () => {
+    clearTimeout(saveTimer);
+    message("Ungespeicherte manuelle Angaben …");
+    saveTimer = setTimeout(() => { try { persist(); } catch (error) { message(error.message, true); } }, 500);
+  });
+  $("stats-form").addEventListener("submit", (event) => {
+    event.preventDefault();
+    try { persist(); } catch (error) { message(error.message, true); }
+  });
+  $("record-sample").addEventListener("click", () => {
+    try {
+      draft = core.appendSample(read(), new Date().toISOString());
+      persist();
+      message("Manuellen Punkt protokolliert. Das ist kein automatisch gemessener Live-Wert.");
+    } catch (error) { message(error.message, true); }
+  });
+  $("clear-samples").addEventListener("click", () => {
+    if (!confirm("Messreihe und deren Peakwerte zurücksetzen? Exportiere sie vorher bei Bedarf als JSON.")) return;
+    try {
+      draft = read();
+      draft.samples = [];
+      persist();
+      message("Messreihe zurückgesetzt. Einzelne Eingaben bleiben erhalten.");
+    } catch (error) { message(error.message, true); }
+  });
+
   draft = stored(draft.model);
   fill();
 })();
