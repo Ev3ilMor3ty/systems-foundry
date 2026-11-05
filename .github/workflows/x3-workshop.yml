@@ -1,0 +1,32 @@
+name: X3 Workshop web checks
+on:
+  push:
+    paths:
+      - "labs/x3-workshop/**"
+      - ".github/workflows/x3-workshop.yml"
+  pull_request:
+    paths:
+      - "labs/x3-workshop/**"
+      - ".github/workflows/x3-workshop.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser-and-core:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Profile and embedded source checks
+        run: node labs/x3-workshop/tests.cjs
+      - name: Install isolated browser test dependency
+        run: npm install --prefix "$RUNNER_TEMP/x3-qa" --no-audit --no-fund playwright@1.56.1
+      - name: Install Chromium
+        run: node "$RUNNER_TEMP/x3-qa/node_modules/playwright/cli.js" install --with-deps chromium
+      - name: Desktop and mobile viewport checks
+        env:
+          X3_PLAYWRIGHT_MODULE: "${{ runner.temp }}/x3-qa/node_modules/playwright"
+        run: node labs/x3-workshop/browser-tests.cjs

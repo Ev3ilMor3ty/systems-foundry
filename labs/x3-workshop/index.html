@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#11120f">
+<meta name="description" content="X3 Workshop: Firmwarestände und lokale Profilentwürfe für Segway MAX G3 D, F3 Pro D, ZT3 Pro D und E3 Pro D.">
+<title>X3 Workshop — Deine Werkstatt für die 3er-Reihe</title>
+<style>
+:root{--bg:#11120f;--panel:#1a1b17;--line:#33352d;--text:#f2f0e7;--muted:#a9ac9c;--accent:#e8b868;--soft:#24251f;--green:#b3cf9b;--radius:18px;font:16px/1.6 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text);background:var(--bg);scroll-behavior:smooth}
+*{box-sizing:border-box}body{margin:0}button,input,select,textarea{font:inherit}button,a,input,select,textarea{outline-offset:5px}a{color:var(--accent);text-underline-offset:4px}a:hover{color:#ffe0aa}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.55}button,input,select,textarea{border:1px solid var(--line);border-radius:10px}input,select,textarea{width:100%;min-width:0;background:#10110e;color:var(--text);padding:11px 12px}input::placeholder,textarea::placeholder{color:#7d8172}input[type=checkbox]{width:20px;height:20px;accent-color:var(--accent);flex-shrink:0}button,.button{padding:11px 18px;background:var(--soft);color:var(--text);font-weight:650;text-decoration:none;display:inline-flex;justify-content:center;align-items:center;gap:8px}button:hover,.button:hover{border-color:var(--accent);color:var(--text)}.primary{background:var(--accent);border-color:var(--accent);color:#20180a}.primary:hover{background:#f4ca87;color:#20180a}h1,h2,h3,p{margin:0}h1{font-size:clamp(42px,6vw,78px);line-height:1.05;letter-spacing:-.065em;font-weight:650;max-width:760px}h2{font-size:clamp(25px,3vw,34px);line-height:1.2;letter-spacing:-.035em}h3{font-size:18px;letter-spacing:-.02em}.wrap{max-width:1220px;margin:0 auto;padding:0 32px}.top{border-bottom:1px solid var(--line)}.top .wrap{display:flex;align-items:center;justify-content:space-between;min-height:84px;gap:24px}.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--text);font-weight:700;letter-spacing:-.03em;font-size:21px}.brand-mark{background:var(--accent);color:#1d190e;font-size:16px;border-radius:9px;display:grid;place-items:center;width:38px;height:38px;font-weight:850}nav{display:flex;gap:28px}nav a{font-size:14px;color:var(--muted);text-decoration:none}nav a:hover{color:var(--text)}.pill{display:inline-flex;align-items:center;gap:7px;padding:5px 10px;border:1px solid #5a4a30;border-radius:99px;color:var(--accent);font-size:12px;white-space:nowrap}.dot{width:6px;height:6px;background:var(--accent);border-radius:50%}.eyebrow{text-transform:uppercase;letter-spacing:.16em;font-size:11px;color:var(--muted);font-weight:700}.hero{padding-top:68px;padding-bottom:44px;display:grid;grid-template-columns:1.1fr .9fr;gap:30px;align-items:center}.hero h1{margin:20px 0}.lead{color:var(--muted);font-size:17px;max-width:560px}.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}.visual{height:310px;position:relative;overflow:hidden;border-radius:24px;background:radial-gradient(ellipse at 55% 50%,#353228 0,#1c1e18 44%,#141510 75%)}.visual svg{width:100%;height:100%;color:#c7cbbc}.visual-label{position:absolute;left:22px;top:20px}.visual-note{position:absolute;bottom:16px;right:20px;color:#929786;font-size:11px}.notice{padding:15px 20px;border:1px solid var(--line);border-radius:12px;display:flex;align-items:baseline;gap:12px;background:#191b15;font-size:13px;color:var(--muted)}.notice strong{color:var(--text);white-space:nowrap}.workspace{display:grid;grid-template-columns:220px 1fr;gap:36px;padding-top:44px;padding-bottom:60px}.sidebar{position:sticky;top:24px;align-self:start}.sidebar .eyebrow{margin-bottom:16px}#model-picker{display:grid;gap:8px}#model-picker button{text-align:left;justify-content:flex-start;background:transparent;border-color:transparent;font-size:14px}#model-picker button[aria-pressed=true]{background:var(--soft);border-color:var(--line);color:var(--accent)}.side-note{margin-top:28px;border-top:1px solid var(--line);padding-top:20px;font-size:12px;color:var(--muted)}.side-note strong{display:block;color:var(--text);font-size:13px;margin-bottom:6px}.content{min-width:0;display:grid;gap:26px}.section{scroll-margin-top:28px}.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}.section-head h2{margin-top:6px}.panel{border:1px solid var(--line);border-radius:var(--radius);background:var(--panel);overflow:hidden}.panel-body{padding:24px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}label{display:block;font-size:12px;color:var(--muted)}label input,label select,label textarea{margin-top:6px}small{font-size:12px}.muted{color:var(--muted)}.mono{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:12px;overflow-wrap:anywhere}.sub{display:block;font-size:11px;font-weight:400;color:var(--muted);margin-top:2px}.table-scroll{overflow-x:auto}table{border-collapse:collapse;width:100%;text-align:left;min-width:570px}th,td{padding:15px 20px;border-bottom:1px solid var(--line);font-size:12px}thead th{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:600;background:#171913}tbody tr:last-child th,tbody tr:last-child td{border-bottom:0}tbody th{font-weight:500}.panel-foot{padding:18px 24px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}.panel-foot p+p{margin-top:8px}.form-title{padding:21px 24px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:center}.block+.block{border-top:1px solid var(--line)}.block{padding:24px}.block h3{margin-bottom:8px}.block .grid{margin-top:18px}.switch{display:flex;gap:12px;align-items:center;color:var(--text);font-size:15px;font-weight:650}.switch input{margin:0}.switch-state{margin-left:auto;font-size:11px;color:var(--accent);font-weight:400}fieldset{border:0;padding:0;margin:0}fieldset:disabled{opacity:.5}.info{font-size:12px;color:var(--muted);margin-top:10px}.check{padding:21px 24px;border-top:1px solid var(--line);background:#20221b}.check-top{display:flex;gap:16px;align-items:center;justify-content:space-between;margin-bottom:10px}.check-top strong{font-size:14px}.check p{font-size:12px;color:var(--muted)}.check p+p{margin-top:6px}.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:22px}.file-button{position:relative;overflow:hidden;cursor:pointer;color:var(--text);font-size:14px}.file-button input{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer;margin:0}.file-button:focus-within{outline:2px solid var(--accent);outline-offset:4px}.ghost{background:transparent;color:var(--muted);font-size:13px}.status{min-height:26px;margin-top:14px;font-size:12px;color:var(--green)}.status.error{color:#ffb7a0}.package-upload{display:flex;flex-direction:column;align-items:center;gap:8px;padding:25px;text-align:center;border:1px dashed #535744;border-radius:12px;position:relative;color:var(--muted);cursor:pointer}.package-upload strong{color:var(--text);font-size:14px}.package-upload input{position:absolute;inset:0;opacity:0;cursor:pointer}.package-upload:focus-within{outline:2px solid var(--accent);outline-offset:4px}.hash{padding:14px;background:#11130e;border-radius:8px;overflow-wrap:anywhere;min-height:48px;margin:12px 0}.test-list{display:grid;gap:0}.test-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 24px;border-bottom:1px solid var(--line);font-size:13px}.test-row:last-child{border-bottom:0}.test-label{font-size:11px;padding:3px 9px;border-radius:99px;background:#2b2d24;color:var(--muted);white-space:nowrap}.links{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;margin-top:16px}.guide{padding:24px}.guide p{font-size:13px;color:var(--muted);margin-top:10px}.footer{border-top:1px solid var(--line);padding:24px 0 40px;color:var(--muted);font-size:12px}.footer .wrap{display:flex;justify-content:space-between;gap:20px}.skip{position:absolute;top:-80px;left:12px;background:var(--accent);color:#111;padding:12px;z-index:10}.skip:focus{top:12px}details{margin-top:14px}summary{cursor:pointer;font-size:13px;color:var(--accent)}details p{margin-top:10px}.mark{display:inline-block;font-size:11px;background:#2a2d23;color:var(--green);border-radius:6px;padding:4px 9px}noscript{display:block;padding:20px;color:#ffb7a0}
+@media(max-width:1000px){.hero{grid-template-columns:1fr .7fr}.workspace{grid-template-columns:180px 1fr;gap:24px}.grid.three{grid-template-columns:1fr}nav{gap:18px}}
+@media(max-width:760px){.wrap{padding:0 20px}.top .wrap{min-height:72px;flex-wrap:wrap;padding-top:16px;padding-bottom:16px;gap:14px}nav{order:3;width:100%;justify-content:space-between;font-size:12px}.hero{grid-template-columns:1fr;padding-top:38px;gap:26px}.visual{height:220px}.hero h1{max-width:470px}.notice{display:block}.notice strong{display:block;margin-bottom:5px}.workspace{grid-template-columns:1fr;padding-top:28px;gap:24px}.sidebar{position:static}#model-picker{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}#model-picker button{border-color:var(--line);font-size:13px}.side-note{display:none}.section-head{align-items:flex-start}.grid{gap:14px}.grid.three{grid-template-columns:1fr}.block,.panel-body,.guide{padding:20px}.switch{flex-wrap:wrap}.switch-state{width:100%;margin-left:32px}.check-top{align-items:flex-start;flex-direction:column}.footer .wrap{flex-direction:column}.test-row{padding:15px 20px}.form-title{padding:20px}.hero .lead{font-size:15px}}
+@media(max-width:400px){.grid{grid-template-columns:1fr}.toolbar{align-items:stretch}.toolbar>button,.toolbar>.button{flex:1}.pill{font-size:10px}}
+@media(prefers-reduced-motion:reduce){:root{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<a class="skip" href="#werkstatt">Zum Inhalt</a>
+<header class="top"><div class="wrap"><a class="brand" href="#"><span class="brand-mark">X3</span> Workshop</a><nav aria-label="Hauptnavigation"><a href="#werkstatt">Werkstatt</a><a href="#firmware">Firmware</a><a href="#profile">Profile</a><a href="#pruefungen">Prüfungen</a></nav><span class="pill"><span class="dot"></span> Entwicklungsversion</span></div></header>
+<main class="wrap">
+<section class="hero" aria-labelledby="hero-title">
+<div><p class="eyebrow">G3 / F3 / ZT3 / E3 · D-Varianten</p><h1 id="hero-title">Dein Roller.<br>Deine Werkstatt.</h1><p class="lead">Firmwarestände im Blick. Hardware sauber zugeordnet. Profile an einem Ort – lokal auf deinem Gerät.</p><div class="hero-actions"><a class="button primary" href="#werkstatt">Werkstatt öffnen <span aria-hidden="true">↗</span></a><a class="button" href="#ios">iPhone &amp; iPad</a></div></div>
+<div class="visual" aria-hidden="true"><span class="visual-label eyebrow">X3 / Systemübersicht</span>
+<svg viewBox="0 0 500 310" fill="none"><ellipse cx="258" cy="248" rx="186" ry="20" fill="#090b07" opacity=".65"/><circle cx="127" cy="224" r="36" stroke="#6f7662" stroke-width="13"/><circle cx="371" cy="224" r="36" stroke="#6f7662" stroke-width="13"/><circle cx="127" cy="224" r="10" stroke="#dab476" stroke-width="3"/><circle cx="371" cy="224" r="12" stroke="#dab476" stroke-width="3"/><path d="M130 218L157 205H324L367 223" stroke="currentColor" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/><path d="M156 202L194 94L202 68" stroke="currentColor" stroke-width="12" stroke-linecap="round"/><path d="M168 67H233" stroke="currentColor" stroke-width="9" stroke-linecap="round"/><path d="M191 93L174 165" stroke="#e8b868" stroke-width="3"/><path d="M184 198H302" stroke="#e8b868" stroke-width="4" stroke-linecap="round"/><path d="M344 184L359 203" stroke="#aeb39d" stroke-width="9" stroke-linecap="round"/><path d="M99 205C108 183 143 182 155 200M345 198C355 182 384 184 396 203" stroke="#4d5443" stroke-width="5" stroke-linecap="round"/><circle cx="212" cy="62" r="4" fill="#e8b868"/><path d="M220 62H279M251 196V147H300M381 224H441" stroke="#5e6650" stroke-width="1"/><text x="286" y="66" fill="#a9ac9c" font-size="11" font-family="monospace">BLE / VCU</text><text x="308" y="151" fill="#a9ac9c" font-size="11" font-family="monospace">BMS</text><text x="414" y="215" fill="#a9ac9c" font-size="11" font-family="monospace">MCU</text></svg>
+<span class="visual-note">Schematische Darstellung · keine Live-Verbindung</span></div>
+</section>
+<div class="notice" role="note"><strong>Profil- und Firmware-Werkstatt</strong><span>Diese Version schreibt nichts auf deinen Roller und erzeugt keine Firmware. Field Weakening ist ein Profilwunsch, keine aktive Motorfunktion. Eine reale Geschwindigkeit über 70 km/h ist nicht nachgewiesen.</span></div>
+<div class="workspace" id="werkstatt">
+<aside class="sidebar" aria-label="Modellauswahl"><p class="eyebrow">01 / Modell wählen</p><div id="model-picker"></div><div class="side-note"><strong>Lokal. Ohne Konto.</strong>Deine Eingaben bleiben im Browser. JSON-Exporte sind Entwürfe und keine Firmware-Backups.<br><br>Keine Zugehörigkeit zu Segway, N-SAK oder kasai.</div></aside>
+<div class="content">
+<section class="section" id="firmware" aria-labelledby="model-name"><div class="section-head"><div><p class="eyebrow">02 / Firmware-Inventar</p><h2 id="model-name">MAX G3 D</h2></div><span class="mark" id="model-mark">G3</span></div>
+<div class="panel"><div class="table-scroll"><table><caption class="sub" style="text-align:left;padding:15px 20px">Aktuelle und vorherige Releases bleiben unbekannt, solange kein belastbarer Nachweis vorliegt.</caption><thead><tr><th scope="col">Komponente</th><th scope="col">Deine Eingabe</th><th scope="col">Neueste belegt</th><th scope="col">Vorletzte belegt</th></tr></thead><tbody id="firmware-rows"></tbody></table></div><div class="panel-foot" id="observation"></div></div></section>
+<section class="section" id="profile" aria-labelledby="profile-title"><div class="section-head"><div><p class="eyebrow">03 / Profilentwurf</p><h2 id="profile-title">Erst zuordnen. Dann prüfen.</h2></div></div>
+<form id="draft-form" novalidate><div class="panel"><div class="form-title"><h3>Firmware &amp; Hardware</h3><span class="muted" style="font-size:11px" id="coverage">0 / 4 Stände erfasst</span></div>
+<div class="block"><p class="info" style="margin-top:0">Übernimm die exakten Stände aus deiner Segway-App. Unbekannte Werte leer lassen.</p><div class="grid"><label>VCU · Fahrzeugsteuerung<input id="fw-vcu" maxlength="48" placeholder="z. B. 1.6.4" autocapitalize="off" spellcheck="false"></label><label>MCU / ESC / DRV · Motorsteuerung<input id="fw-mcu" maxlength="48" placeholder="Versionskennung" autocapitalize="off" spellcheck="false"></label><label>BLE / Dashboard<input id="fw-ble" maxlength="48" placeholder="Versionskennung" autocapitalize="off" spellcheck="false"></label><label>BMS · Akkusteuerung<input id="fw-bms" maxlength="48" placeholder="Versionskennung" autocapitalize="off" spellcheck="false"></label></div></div>
+<div class="block"><h3>Welche Hardware ist verbaut?</h3><p class="info">Eine Modellbezeichnung oder „US-Motor“ bestätigt noch keine Controller- oder Firmwarekompatibilität.</p><div class="grid three"><label>Motor · Typ / Teilenummer<input id="hw-motor" maxlength="120" placeholder="Noch nicht erfasst"></label><label>Controller · Hardware-Revision<input id="hw-controller" maxlength="120" placeholder="Noch nicht erfasst"></label><label>Akku · Typ / Hardware-Revision<input id="hw-battery" maxlength="120" placeholder="Noch nicht erfasst"></label></div></div>
+<div class="block"><label class="switch" for="field-weakening"><input id="field-weakening" type="checkbox">Field Weakening vormerken<span class="switch-state" id="fw-draft-state">Nicht angefragt</span></label><p class="info">Nur Planungswerte. Keine empfohlenen Stromwerte und keine Prüfung der elektrischen Belastbarkeit. Ein US-Motor allein belegt keine erreichbare Geschwindigkeit.</p><fieldset id="fw-parameters" disabled><legend class="sub" style="margin-top:14px">Optionale Wunschparameter – nicht angewendet</legend><div class="grid"><label>Einsatzgeschwindigkeit · km/h<input type="number" id="fwStartKmh" min="0" max="1000" step="any" placeholder="Nicht festgelegt" inputmode="decimal"></label><label>Feldschwächstrom · A<input type="number" id="fwCurrentA" min="0" max="1000" step="any" placeholder="Nicht festgelegt" inputmode="decimal"></label></div></fieldset></div>
+<div class="block"><h3>Fahrprofil vormerken</h3><p class="info">Die Felder dokumentieren Wünsche. Sie verändern weder Fahrmodi noch Bremsen oder Motorsteuerung.</p><div class="grid three"><label>Eco · km/h<input id="ecoKmh" type="number" min="0" max="1000" step="any" placeholder="Unverändert" inputmode="decimal"></label><label>Drive · km/h<input id="driveKmh" type="number" min="0" max="1000" step="any" placeholder="Unverändert" inputmode="decimal"></label><label>Sport · km/h<input id="sportKmh" type="number" min="0" max="1000" step="any" placeholder="Unverändert" inputmode="decimal"></label></div><div class="grid"><label>Rekuperation · Wunsch<select id="regen"><option value="stock">Werkseinstellung beibehalten</option value="off">Aus · nur Entwurf</option value="weak">Schwach · nur Entwurf</option value="standard">Standard · nur Entwurf</option></select></label><label>Notizen<textarea id="notes" rows="2" maxlength="2000" placeholder="Hardware, Beobachtungen, offene Fragen"></textarea></label></div></div>
+<div class="check"><div class="check-top"><strong>Flashen nicht verfügbar</strong><button type="button" disabled aria-describedby="assessment">Keine geprüfte Flashfreigabe</button></div><p id="assessment">Kein getesteter Flashadapter verfügbar.</p><p id="missing"></p></div></div>
+<div class="toolbar"><button class="primary" type="submit">Entwurf speichern</button><button type="button" id="export">JSON exportieren ↗</button><label class="button file-button">JSON importieren<input id="import" type="file" accept=".json,application/json" aria-label="X3-Workshop-JSON-Profil importieren"></label><button class="ghost" type="button" id="reset">Zurücksetzen</button></div><p class="status" id="status" role="status" aria-live="polite">Noch keine Änderungen gespeichert.</p>
+</form></section>
+<section class="section" aria-labelledby="package-title"><div class="section-head"><div><p class="eyebrow">04 / Datei prüfen</p><h2 id="package-title">Die Datei bleibt bei dir.</h2></div></div><div class="panel panel-body"><p class="muted" style="font-size:13px;margin-bottom:20px">Berechne lokal die SHA-256-Prüfsumme einer Datei. Die Datei wird weder hochgeladen noch entpackt oder geflasht. Ein übereinstimmender Hash belegt allein weder Herkunft noch Modellkompatibilität.</p><label class="package-upload"><strong>Datei auswählen</strong><span>BIN, ZIP, ENC oder andere Datei · maximal 16 MiB</span><input id="package" type="file" aria-label="Datei zur lokalen SHA-256-Berechnung auswählen"></label><p class="info" id="file-result">Noch keine Datei ausgewählt.</p><p class="hash mono" id="file-hash" aria-live="polite">—</p><label>Optional: eigene Referenz-Prüfsumme<input id="expected-hash" maxlength="64" placeholder="64 Hex-Zeichen" autocomplete="off" autocapitalize="off" spellcheck="false"></label><p class="info" id="hash-comparison" role="status"></p></div></section>
+<section class="section" id="pruefungen" aria-labelledby="tests-title"><div class="section-head"><div><p class="eyebrow">05 / Nachweise</p><h2 id="tests-title">Jeder Test hat einen Status.</h2></div></div><div class="panel test-list"><div class="test-row"><span>Profilformat &amp; Eingabeprüfung</span><span class="test-label">Softwaretests im Repository</span></div><div class="test-row"><span>iPhone / iPad · Browseroberfläche</span><span class="test-label">Gerätetest offen</span></div><div class="test-row"><span>Bluetooth-Protokoll &amp; Flash-Abbrüche</span><span class="test-label">Nicht implementiert</span></div><div class="test-row"><span>Recovery · neueste / vorletzte Firmware</span><span class="test-label">Nicht getestet</span></div><div class="test-row"><span>Field Weakening · Strom / Temperatur / Bremse</span><span class="test-label">Prüfstand fehlt</span></div></div><p class="info">Softwaretests bestätigen keine Flashbarkeit. Es liegen keine erfolgreichen Hardwaretests für die vier Modelle vor.</p></section>
+<section class="section" id="ios" aria-labelledby="ios-title"><div class="panel guide"><p class="eyebrow">iPhone / iPad</p><h2 id="ios-title" style="margin-top:8px">Im Browser planen.</h2><p>Diese Website funktioniert ohne Installation als lokale Profilverwaltung. Es gibt hier keinen Bluetooth- oder Flashadapter und noch keine installierbare eigene iOS-App. Das Speichern eines Profils führt keine Geräteaktion aus.</p><details><summary>Was für echtes Flashen noch fehlt</summary><p>Pro Modell und Hardware-Revision werden passende Originaldateien, exakte Komponentenstände, ein implementierter Übertragungsweg sowie getestete Abbruch- und Wiederherstellungsverfahren benötigt. Field Weakening braucht zusätzliche Prüfstandsnachweise für Motor, Controller und Akku.</p></details></div></section>
+<section class="section" aria-labelledby="updates-title"><div class="panel guide"><p class="eyebrow">Firmware-Beobachtung</p><h3 id="updates-title" style="margin-top:8px">Datenstand: 05.11.2026 · kein Live-Feed</h3><p>Die neueste und vorletzte Originalversion sind für die vier Modelle nicht vollständig öffentlich belegt. Die separate ChatGPT-Updateaufgabe aktualisiert diese Website noch nicht automatisch. Neue Versionsnummern sind kein Nachweis für Tuning-Kompatibilität.</p><div class="links"><a href="https://eu-en.segway.com/regulation/report-a-vulnerability.html" target="_blank" rel="noopener noreferrer">Segway · offizielle Sicherheitshinweise ↗</a><a href="https://t.me/s/scooterhackingupdates" target="_blank" rel="noopener noreferrer">ScooterHacking · Community-Meldungen ↗</a><a href="https://github.com/Ev3ilMor3ty/systems-foundry/tree/main/labs/x3-workshop" target="_blank" rel="noopener noreferrer">Quellcode &amp; Testanleitung ↗</a></div></div></section>
+</div></div>
+<noscript>Bitte JavaScript aktivieren. Profilverwaltung und Dateiprüfung benötigen JavaScript. Es werden keine Daten an einen Server übertragen.</noscript>
+</main>
+<footer class="footer"><div class="wrap"><span>X3 Workshop · Eigenständiges Projekt · MIT-Lizenz</span><span>Für Forschung und Privatgelände · Keine Leistungszusage</span></div></footer>
+<script id="x3-core">
+/* X3 Workshop — MIT. Profile planning only; no device writes. */
+var X3Core = (() => {
+  "use strict";
+  const models = Object.freeze([
+    { id: "max-g3-d", name: "MAX G3 D", family: "G3" },
+    { id: "f3-pro-d", name: "F3 Pro D", family: "F3" },
+    { id: "zt3-pro-d", name: "ZT3 Pro D", family: "ZT3" },
+    { id: "e3-pro-d", name: "E3 Pro D", family: "E3" },
+  ]);
+  const components = Object.freeze([
+    { id: "vcu", name: "VCU", detail: "Fahrzeugsteuerung" },
+    { id: "mcu", name: "MCU / ESC / DRV", detail: "Motorsteuerung" },
+    { id: "ble", name: "BLE / Dashboard", detail: "Bluetooth und Anzeige" },
+    { id: "bms", name: "BMS", detail: "Akkusteuerung" },
+  ]);
+  const issue = "https://github.com/scooterhacking/scooterhacking-issues-public/issues/279";
+  const observedG3 = Object.freeze({
+    vcu: "1.6.4", mcu: "1.6.0", ble: "0.4.5", bms: "4.1.6.8",
+    date: "2026-10-13", source: issue,
+  });
+  function model(id) {
+    const found = models.find((item) => item.id === id);
+    if (!found) throw new Error("Unbekanntes Modell. Es wird kein Ersatzmodell verwendet.");
+    return found;
+  }
+  function text(value, max, label) {
+    if (typeof value !== "string" || value.length > max || /[\u0000-\u0008\u000b\u000c\u000e-\u001f]/.test(value))
+      throw new Error(label + ": ungültiger Text oder zu lang.");
+    return value.trim();
+  }
+  function version(value) {
+    const result = text(value, 48, "Firmware-Version");
+    if (result && (!/^[A-Za-z0-9][A-Za-z0-9._+-]*$/.test(result) || !/\d/.test(result)))
+      throw new Error("Versionskennung ungültig. Beispiel: 1.6.4. Unbekannte Versionen leer lassen.");
+    return result;
+  }
+  function number(value, label) {
+    if (value === null || value === undefined || value === "") return null;
+    if (typeof value !== "number" || !Number.isFinite(value) || value < 0 || value > 1000)
+      throw new Error(label + ": nur endliche Zahlen von 0 bis 1000 oder leer.");
+    return value;
+  }
+  function object(value, label) {
+    if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error(label + " fehlt.");
+    return value;
+  }
+  function blank(id) {
+    model(id);
+    return {
+      schemaVersion: 1, kind: "x3-workshop-profile", model: id,
+      firmware: { vcu: "", mcu: "", ble: "", bms: "" },
+      hardware: { motor: "", controller: "", battery: "" },
+      tuning: { fieldWeakeningRequested: false, fwStartKmh: null, fwCurrentA: null,
+        ecoKmh: null, driveKmh: null, sportKmh: null, regen: "stock" },
+      notes: "",
+    };
+  }
+  function validate(input) {
+    object(input, "Profil");
+    if (input.schemaVersion !== 1 || input.kind !== "x3-workshop-profile")
+      throw new Error("Keine X3-Workshop-Profildatei im Format 1. Firmwaredateien werden nicht importiert.");
+    const clean = blank(input.model);
+    const fw = object(input.firmware, "Firmwarestände");
+    const hw = object(input.hardware, "Hardware");
+    const tuning = object(input.tuning, "Profilparameter");
+    components.forEach(({ id }) => { clean.firmware[id] = version(fw[id]); });
+    ["motor", "controller", "battery"].forEach((key) => {
+      clean.hardware[key] = text(hw[key], 120, "Hardware");
+    });
+    if (typeof tuning.fieldWeakeningRequested !== "boolean") throw new Error("Field-Weakening-Wunsch ungültig.");
+    clean.tuning.fieldWeakeningRequested = tuning.fieldWeakeningRequested;
+    ["fwStartKmh", "fwCurrentA", "ecoKmh", "driveKmh", "sportKmh"].forEach((key) => {
+      clean.tuning[key] = number(tuning[key], key);
+    });
+    if (!["stock", "off", "weak", "standard"].includes(tuning.regen))
+      throw new Error("Rekuperations-Auswahl ungültig.");
+    clean.tuning.regen = tuning.regen;
+    clean.notes = text(input.notes, 2000, "Notizen");
+    return clean;
+  }
+  function parse(source) {
+    if (typeof source !== "string" || source.length > 65536) throw new Error("Profil ist größer als 64 KiB.");
+    let data;
+    try { data = JSON.parse(source); } catch { throw new Error("Die Datei enthält kein gültiges JSON."); }
+    return validate(data);
+  }
+  function assess(input) {
+    const draft = validate(input);
+    const missing = components.filter(({ id }) => !draft.firmware[id]).map(({ name }) => name);
+    const knownBlockedPath = draft.model === "max-g3-d" && draft.firmware.vcu.replace(/^v/i, "") === "1.6.4";
+    return {
+      canFlash: false, deviceTested: false, firmwareGenerated: false,
+      missing, knownBlockedPath,
+      title: "Flashen nicht verfügbar",
+      detail: knownBlockedPath
+        ? "Für G3 VCU 1.6.4 ist der bisherige SHU-Bluetooth-Flashweg laut Community-Maintainer geschlossen. Das ist keine Aussage über andere Werkzeuge oder spätere Verfahren."
+        : "Für diese exakte Kombination liegt hier kein getesteter Flashadapter vor. Vollständige Eingaben sind kein Kompatibilitätsnachweis.",
+      source: knownBlockedPath ? issue : null,
+    };
+  }
+  return Object.freeze({ models, components, model, blank, validate, parse, assess, observedG3 });
+})();
+if (typeof module !== "undefined" && module.exports) module.exports = X3Core;
+</script>
+<script id="x3-app">
+(() => {
+  "use strict";
+  const core = X3Core;
+  const $ = (id) => document.getElementById(id);
+  const key = (id) => "x3-workshop:v1:" + id;
+  let draft = core.blank(core.models[0].id);
+  let saveTimer;
+  let fileGeneration = 0;
+  let packageHash = "";
+  function message(text, bad = false) {
+    $("status").textContent = text;
+    $("status").classList.toggle("error", bad);
+  }
+  function stored(id) {
+    try {
+      const raw = localStorage.getItem(key(id));
+      if (raw) {
+        const clean = core.parse(raw);
+        if (clean.model === id) return clean;
+      }
+    } catch { message("Gespeicherter Entwurf konnte nicht geladen werden.", true); }
+    return core.blank(id);
+  }
+  function read() {
+    const result = core.blank(draft.model);
+    core.components.forEach(({ id }) => { result.firmware[id] = $("fw-" + id).value; });
+    ["motor", "controller", "battery"].forEach((id) => { result.hardware[id] = $("hw-" + id).value; });
+    result.tuning.fieldWeakeningRequested = $("field-weakening").checked;
+    ["fwStartKmh", "fwCurrentA", "ecoKmh", "driveKmh", "sportKmh"].forEach((id) => {
+      const value = $(id).value;
+      result.tuning[id] = value === "" ? null : Number(value);
+    });
+    result.tuning.regen = $("regen").value;
+    result.notes = $("notes").value;
+    return core.validate(result);
+  }
+  function persist() {
+    clearTimeout(saveTimer);
+    draft = read();
+    try {
+      localStorage.setItem(key(draft.model), JSON.stringify(draft));
+      message("Entwurf auf diesem Gerät gespeichert.");
+    } catch { message("Browserspeicher nicht verfügbar. Bitte als JSON exportieren.", true); }
+    render();
+  }
+  function addText(parent, tag, value, className) {
+    const child = document.createElement(tag);
+    child.textContent = value;
+    if (className) child.className = className;
+    parent.append(child);
+    return child;
+  }
+  function render() {
+    const selected = core.model(draft.model);
+    $("model-name").textContent = selected.name;
+    $("model-mark").textContent = selected.family;
+    document.querySelectorAll("[data-model]").forEach((button) => {
+      button.setAttribute("aria-pressed", String(button.dataset.model === draft.model));
+    });
+    const body = $("firmware-rows");
+    body.replaceChildren();
+    core.components.forEach(({ id, name, detail }) => {
+      const row = document.createElement("tr");
+      const label = document.createElement("th");
+      label.scope = "row";
+      addText(label, "strong", name);
+      addText(label, "span", detail, "sub");
+      row.append(label);
+      addText(row, "td", draft.firmware[id] || "Nicht erfasst", "mono");
+      addText(row, "td", "Unbekannt", "muted");
+      addText(row, "td", "Unbekannt", "muted");
+      body.append(row);
+    });
+    const evidence = $("observation");
+    evidence.replaceChildren();
+    if (draft.model === "max-g3-d") {
+      addText(evidence, "p", "Beobachteter Originalstand · Community-Bericht vom 13.10.2026", "eyebrow");
+      addText(evidence, "p", "VCU 1.6.4 · MCU 1.6.0 · BLE 0.4.5 · BMS 4.1.6.8", "mono");
+      addText(evidence, "p", "Ein einzelner G3-D-Bericht, keine Bestätigung der neuesten oder vorletzten Version. Hardware-Revision und Release-Datum unbekannt.", "muted");
+      const link = addText(evidence, "a", "Beleg öffnen ↗");
+      link.href = core.observedG3.source;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+    } else {
+      addText(evidence, "p", "Noch kein belastbarer komponentengenauer Ausgangsbestand für diese D-Variante vorhanden.", "muted");
+    }
+    const assessment = core.assess(draft);
+    $("coverage").textContent = (4 - assessment.missing.length) + " / 4 Stände erfasst";
+    $("assessment").textContent = assessment.detail;
+    $("missing").textContent = assessment.missing.length ? "Noch offen: " + assessment.missing.join(", ") : "Alle Stände eingetragen. Die Hardware- und Flashprüfung bleibt offen.";
+    $("fw-draft-state").textContent = draft.tuning.fieldWeakeningRequested ? "Angefragt · nicht angewendet" : "Nicht angefragt";
+    $("fw-parameters").disabled = !draft.tuning.fieldWeakeningRequested;
+  }
+  function fill() {
+    core.components.forEach(({ id }) => { $("fw-" + id).value = draft.firmware[id]; });
+    ["motor", "controller", "battery"].forEach((id) => { $("hw-" + id).value = draft.hardware[id]; });
+    $("field-weakening").checked = draft.tuning.fieldWeakeningRequested;
+    ["fwStartKmh", "fwCurrentA", "ecoKmh", "driveKmh", "sportKmh"].forEach((id) => {
+      $(id).value = draft.tuning[id] === null ? "" : String(draft.tuning[id]);
+    });
+    $("regen").value = draft.tuning.regen;
+    $("notes").value = draft.notes;
+    render();
+  }
+  core.models.forEach((item) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.dataset.model = item.id;
+    button.textContent = item.name;
+    button.addEventListener("click", () => {
+      try {
+        persist();
+        draft = stored(item.id);
+        fill();
+        message(item.name + " ausgewählt. Hardwarezuordnung bleibt unbestätigt.");
+      } catch (error) { message(error.message, true); }
+    });
+    $("model-picker").append(button);
+  });
+  $("draft-form").addEventListener("input", () => {
+    clearTimeout(saveTimer);
+    message("Ungespeicherte Änderungen …");
+    saveTimer = setTimeout(() => {
+      try { persist(); } catch (error) { message(error.message, true); }
+    }, 500);
+  });
+  $("draft-form").addEventListener("submit", (event) => {
+    event.preventDefault();
+    try { persist(); } catch (error) { message(error.message, true); }
+  });
+  $("export").addEventListener("click", () => {
+    try {
+      persist();
+      const payload = JSON.stringify(draft, null, 2) + "\n";
+      const url = URL.createObjectURL(new Blob([payload], { type: "application/json" }));
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = draft.model + ".x3profile.json";
+      document.body.append(anchor);
+      anchor.click();
+      anchor.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 30000);
+      message("JSON-Profil exportiert. Es ist keine flashbare Firmware.");
+    } catch (error) { message(error.message, true); }
+  });
+  $("import").addEventListener("change", async (event) => {
+    const file = event.target.files[0];
+    event.target.value = "";
+    if (!file) return;
+    try {
+      if (file.size > 65536) throw new Error("Profildatei maximal 64 KiB.");
+      const imported = core.parse(await file.text());
+      // Save the existing model before switching; invalid input never replaces it.
+      persist();
+      draft = imported;
+      fill();
+      persist();
+      message("Profil importiert. Gerätezuordnung und Parameter sind nicht hardwaregeprüft.");
+    } catch (error) { message(error.message, true); }
+  });
+  $("reset").addEventListener("click", () => {
+    if (!confirm("Diesen lokalen Modellentwurf löschen? Exportierte Dateien bleiben erhalten.")) return;
+    clearTimeout(saveTimer);
+    try { localStorage.removeItem(key(draft.model)); } catch {}
+    draft = core.blank(draft.model);
+    fill();
+    message("Lokalen Entwurf zurückgesetzt.");
+  });
+  function compareHash() {
+    const expected = $("expected-hash").value.trim().toLowerCase();
+    if (!expected) { $("hash-comparison").textContent = "Keine Referenz-Prüfsumme angegeben."; return; }
+    if (!/^[a-f0-9]{64}$/.test(expected)) { $("hash-comparison").textContent = "Eine SHA-256-Prüfsumme hat 64 Hex-Zeichen."; return; }
+    $("hash-comparison").textContent = packageHash
+      ? (packageHash === expected ? "Prüfsummen stimmen überein. Das belegt keine Kompatibilität oder Herkunft." : "Prüfsummen unterscheiden sich.")
+      : "Bitte zuerst eine Datei auswählen.";
+  }
+  $("expected-hash").addEventListener("input", compareHash);
+  $("package").addEventListener("change", async (event) => {
+    const generation = ++fileGeneration;
+    const file = event.target.files[0];
+    packageHash = "";
+    $("file-hash").textContent = "—";
+    $("hash-comparison").textContent = "";
+    if (!file) { $("file-result").textContent = "Noch keine Datei ausgewählt."; return; }
+    $("file-result").textContent = file.name + " · " + file.size.toLocaleString("de-DE") + " Bytes";
+    if (file.size < 1 || file.size > 16777216) {
+      $("hash-comparison").textContent = "Datei muss zwischen 1 Byte und 16 MiB groß sein.";
+      return;
+    }
+    if (!globalThis.crypto || !globalThis.crypto.subtle) {
+      $("hash-comparison").textContent = "SHA-256 ist in diesem Browser-Kontext nicht verfügbar.";
+      return;
+    }
+    try {
+      const digest = await crypto.subtle.digest("SHA-256", await file.arrayBuffer());
+      if (generation !== fileGeneration) return;
+      packageHash = Array.from(new Uint8Array(digest), (value) => value.toString(16).padStart(2, "0")).join("");
+      $("file-hash").textContent = packageHash;
+      compareHash();
+    } catch {
+      if (generation === fileGeneration) $("hash-comparison").textContent = "Datei konnte nicht geprüft werden.";
+    }
+  });
+  draft = stored(draft.model);
+  fill();
+})();
+</script>
+</body>
+</html>
