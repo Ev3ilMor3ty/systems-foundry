@@ -128,7 +128,21 @@ const core = require("./core.js");
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1), false);
       await page.getByRole("button", { name: "MAX G3 D", exact: true }).click();
       page.once("dialog", (dialog) => dialog.accept());
-      await page.locator("#reset").click();
+      if (viewport.width < 500) {
+        assert.equal(await page.locator("#fw-vcu").evaluate((element) => parseFloat(getComputedStyle(element).fontSize) >= 16), true);
+      }
+      try {
+        await page.locator("#reset").click();
+      } catch (error) {
+        const diagnostic = await page.locator("#reset").evaluate((element) => {
+          const rect = element.getBoundingClientRect();
+          const hit = document.elementFromPoint(rect.x + rect.width / 2, rect.y + rect.height / 2);
+          return { rect: rect.toJSON(), hit: hit && hit.outerHTML.slice(0, 200), scrollY, innerHeight, visualViewport: { scale: window.visualViewport.scale, top: window.visualViewport.offsetTop } };
+        });
+        console.error("X3_RESET_DIAGNOSTIC", JSON.stringify({ viewport, diagnostic }));
+        console.error("X3_RESET_SCREENSHOT_BASE64:" + (await page.screenshot()).toString("base64"));
+        throw error;
+      }
       await page.reload();
       assert.equal(await page.locator("#fw-vcu").inputValue(), "");
       assert.equal(await page.locator("#stat-voltageV").inputValue(), "");
