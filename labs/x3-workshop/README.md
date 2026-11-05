@@ -85,3 +85,5 @@ index.html embeds core.js and app.js for one-file use. Update the matching scrip
 Drafts stay in this browser's localStorage; chosen files are read locally for hashing and never uploaded. Exports include entered hardware identifiers and notes. Storage may be cleared, so retain JSON exports if needed.
 
 Independently written source under the repository's MIT license. No N-SAK/Kasai private code, firmware binaries, logos or UI assets are copied. External projects are linked as evidence only.
+
+Extended drafts use a v2 local-storage namespace, with read-only migration from legacy v1 drafts. Opening an old immutable preview cannot overwrite extended stats. Reset writes a blank v2 draft so legacy values do not reappear after reloading. Browser checks cover both cases.

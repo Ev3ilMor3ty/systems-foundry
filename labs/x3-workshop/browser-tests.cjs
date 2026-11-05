@@ -20,6 +20,16 @@ const core = require("./core.js");
     browser = await chromium.launch({ headless: true });
     for (const viewport of [{ width: 1280, height: 900 }, { width: 390, height: 844 }]) {
       const context = await browser.newContext({ viewport, isMobile: viewport.width < 500, hasTouch: viewport.width < 500, reducedMotion: "reduce", acceptDownloads: true });
+      const legacy = core.blank("max-g3-d");
+      delete legacy.stats; delete legacy.samples;
+      legacy.firmware.vcu = "1.5.4";
+      legacy.notes = "Legacy profile fixture";
+      await context.addInitScript((value) => {
+        if (!localStorage.getItem("x3-fixture-seeded")) {
+          localStorage.setItem("x3-workshop:v1:max-g3-d", JSON.stringify(value));
+          localStorage.setItem("x3-fixture-seeded", "1");
+        }
+      }, legacy);
       const page = await context.newPage();
       const errors = [];
       page.on("pageerror", (error) => errors.push(error.message));
@@ -29,6 +39,7 @@ const core = require("./core.js");
       assert.equal(await page.locator("#model-picker button").count(), 4);
       const blocked = () => page.getByRole("button", { name: "Keine geprüfte Flashfreigabe" }).isDisabled();
       assert.equal(await blocked(), true);
+      assert.equal(await page.locator("#notes").inputValue(), "Legacy profile fixture");
       const versions = { vcu: "1.6.4", mcu: "1.6.0", ble: "0.4.5", bms: "4.1.6.8" };
       for (const [component, value] of Object.entries(versions)) await page.locator("#fw-" + component).fill(value);
       const save = () => page.getByRole("button", { name: "Entwurf speichern", exact: true }).click();
@@ -82,6 +93,12 @@ const core = require("./core.js");
       await page.getByRole("button", { name: "MAX G3 D", exact: true }).click();
       assert.equal(await page.locator("#fw-vcu").inputValue(), "1.6.4");
       assert.equal(await page.locator("#stat-batteryCurrentA").inputValue(), "-5");
+      await page.evaluate(() => {
+        // Simulate an older immutable page writing its legacy key.
+        const old = JSON.parse(localStorage.getItem("x3-workshop:v1:max-g3-d"));
+        old.firmware.vcu = "0.0.1";
+        localStorage.setItem("x3-workshop:v1:max-g3-d", JSON.stringify(old));
+      });
       await page.reload();
       assert.equal(await page.locator("#fw-vcu").inputValue(), "1.6.4");
       const profile = core.blank("f3-pro-d");
@@ -109,6 +126,13 @@ const core = require("./core.js");
       await page.waitForFunction(() => document.getElementById("hash-comparison").textContent.includes("16 MiB"));
       assert.equal(await blocked(), true);
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1), false);
+      await page.getByRole("button", { name: "MAX G3 D", exact: true }).click();
+      page.once("dialog", (dialog) => dialog.accept());
+      await page.locator("#reset").click();
+      await page.reload();
+      assert.equal(await page.locator("#fw-vcu").inputValue(), "");
+      assert.equal(await page.locator("#stat-voltageV").inputValue(), "");
+      assert.equal(await page.locator("#value-input-peak").innerText(), "—");
       assert.deepEqual(errors, []);
       results.push({ viewport, result: "passed", browser: "Chromium", realIOS: false });
       await context.close();

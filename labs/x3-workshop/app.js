@@ -2,7 +2,7 @@
   "use strict";
   const core = X3Core;
   const $ = (id) => document.getElementById(id);
-  const key = (id) => "x3-workshop:v1:" + id;
+  const key = (id) => "x3-workshop:v2:" + id;
   let draft = core.blank(core.models[0].id);
   let saveTimer;
   let fileGeneration = 0;
@@ -16,7 +16,7 @@
   }
   function stored(id) {
     try {
-      const raw = localStorage.getItem(key(id));
+      const raw = localStorage.getItem(key(id)) ?? localStorage.getItem("x3-workshop:v1:" + id);
       if (raw) {
         const clean = core.parse(raw);
         if (clean.model === id) return clean;
@@ -234,10 +234,12 @@
   $("reset").addEventListener("click", () => {
     if (!confirm("Diesen lokalen Modellentwurf löschen? Exportierte Dateien bleiben erhalten.")) return;
     clearTimeout(saveTimer);
-    try { localStorage.removeItem(key(draft.model)); } catch {}
     draft = core.blank(draft.model);
     fill();
-    message("Lokalen Entwurf zurückgesetzt.");
+    try {
+      localStorage.setItem(key(draft.model), JSON.stringify(draft));
+      message("Lokalen Entwurf zurückgesetzt.");
+    } catch { message("Zurücksetzen konnte nicht dauerhaft gespeichert werden.", true); }
   });
   function compareHash() {
     const expected = $("expected-hash").value.trim().toLowerCase();
