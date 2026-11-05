@@ -1,0 +1,36 @@
+name: Verify X3 public preview
+on:
+  push:
+    paths:
+      - ".github/workflows/x3-public-preview.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  public-preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Verify immutable public HTML response
+        env:
+          X3_SOURCE_COMMIT: "4533ca71e50a33130d0ae9dcd28797587d5e7502"
+        run: |
+          node <<'NODE'
+          const fs = require("node:fs");
+          const crypto = require("node:crypto");
+          (async () => {
+            const url = "https://rawcdn.githack.com/Ev3ilMor3ty/systems-foundry/" + process.env.X3_SOURCE_COMMIT + "/labs/x3-workshop/index.html";
+            const response = await fetch(url, { signal: AbortSignal.timeout(30000) });
+            const body = Buffer.from(await response.arrayBuffer());
+            const expected = fs.readFileSync("labs/x3-workshop/index.html");
+            const sha = (value) => crypto.createHash("sha256").update(value).digest("hex");
+            const contentType = response.headers.get("content-type") || "";
+            const result = { url, status: response.status, contentType, bytes: body.length, sha256: sha(body), expectedSha256: sha(expected), exactMatch: body.equals(expected), userBrowserConfirmationMayAppear: true };
+            console.log(JSON.stringify(result, null, 2));
+            if (!response.ok || !contentType.includes("text/html") || !body.equals(expected)) process.exitCode = 1;
+          })().catch((error) => { console.error(error.message); process.exitCode = 1; });
+          NODE
