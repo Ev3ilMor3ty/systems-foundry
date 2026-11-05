@@ -35,6 +35,7 @@ const core = require("./core.js");
       page.on("pageerror", (error) => errors.push(error.message));
       await page.goto("http://127.0.0.1:" + server.address().port + "/");
       await page.getByRole("heading", { name: /X3 Studio/ }).waitFor();
+      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth) <= viewport.width + 1, true, "page must fit the requested viewport, not an auto-expanded innerWidth");
       assert.equal(await page.locator("#firmware-rows tr").count(), 4);
       assert.equal(await page.locator("#model-picker button").count(), 4);
       const blocked = () => page.getByRole("button", { name: "Keine geprüfte Flashfreigabe" }).isDisabled();
@@ -125,7 +126,7 @@ const core = require("./core.js");
       await page.locator("#package").setInputFiles({ name: "large.bin", mimeType: "application/octet-stream", buffer: Buffer.alloc(16777217) });
       await page.waitForFunction(() => document.getElementById("hash-comparison").textContent.includes("16 MiB"));
       assert.equal(await blocked(), true);
-      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1), false);
+      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth) <= viewport.width + 1, true);
       await page.getByRole("button", { name: "MAX G3 D", exact: true }).click();
       page.once("dialog", (dialog) => dialog.accept());
       if (viewport.width < 500) {
